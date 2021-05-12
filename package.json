@@ -26,7 +26,8 @@
   "author": "Rohit Gohri <work@rohit.page>",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.6"
+    "@actions/core": "^1.2.6",
+    "undici-fetch": "^0.3.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
