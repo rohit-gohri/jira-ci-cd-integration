@@ -2,35 +2,35 @@
   <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
 </p>
 
-# Create a JavaScript Action using TypeScript
+# Jira Github Integration
 
-Use this template to bootstrap the creation of a TypeScript action.:rocket:
+## Usage
 
-This template includes compilation support, tests, a validation workflow, publishing, and versioning guidance.  
+### Generate Credentials
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+See <https://support.atlassian.com/jira-cloud-administration/docs/integrate-with-self-hosted-tools-using-oauth/>
 
-## Create an action from this template
 
-Click the `Use this Template` and provide the new repo details for your action
-
-## Code in Main
+## Development
 
 > First, you'll need to have a reasonably modern version of `node` handy. This won't work with versions older than 9, for instance.
 
 Install the dependencies  
+
 ```bash
-$ npm install
+npm install
 ```
 
 Build the typescript and package it for distribution
+
 ```bash
-$ npm run build && npm run package
+npm run build && npm run package
 ```
 
 Run the tests :heavy_check_mark:  
+
 ```bash
-$ npm test
+npm test
 
  PASS  ./index.test.js
   ✓ throws invalid number (3ms)
