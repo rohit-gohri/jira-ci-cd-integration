@@ -1,7 +1,5 @@
 "use strict";
 
-require('./sourcemap-register.js');
-
 module.exports =
 /******/
 (() => {
@@ -14336,4 +14334,3 @@ module.exports =
   return __webpack_require__(3109);
   /******/
 })();
-//# sourceMappingURL=/Users/rohitgohri/Projects/personal/jira-github-action/transpiled/index.js.map

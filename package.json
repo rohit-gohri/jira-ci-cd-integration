@@ -9,8 +9,8 @@
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
-    "package": "ncc build lib/main.js --source-map --license licenses.txt",
-    "transpile": "babel-changed --src dist --dest transpiled",
+    "package": "ncc build lib/main.js --license licenses.txt",
+    "transpile": "babel-changed --src dist --dest transpiled --source-maps false",
     "test": "jest",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm run transpile && npm test"
   },
