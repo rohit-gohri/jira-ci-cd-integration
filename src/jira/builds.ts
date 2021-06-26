@@ -1,4 +1,4 @@
-import fetch from 'undici-fetch'
+import fetch from 'isomorphic-fetch'
 
 /**
  * @see https://developer.atlassian.com/cloud/jira/software/rest/api-group-builds/#api-builds-0-1-bulk-post

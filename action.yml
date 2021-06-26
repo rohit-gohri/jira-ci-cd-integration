@@ -24,4 +24,4 @@ inputs:
     description: Will be parsed from branch name automatically
 runs:
   using: 'node12'
-  main: 'transpiled/index.js'
+  main: 'dist/index.js'

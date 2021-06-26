@@ -3,7 +3,7 @@
  * Generated from OpenAPI file and [fetch-openapi](https://github.com/kogosoftwarellc/open-api/tree/master/packages/fetch-openapi)
  * @see https://redocly.github.io/redoc/?url=https://developer.atlassian.com/cloud/jira/software/on-premise-swagger.json
  */
-import fetch from 'undici-fetch'
+import fetch from 'isomorphic-fetch'
 import {getCloudId, getJWT} from './auth'
 import {operations} from './schema'
 

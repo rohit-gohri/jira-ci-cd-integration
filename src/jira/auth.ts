@@ -1,5 +1,5 @@
 import {stringify} from 'querystring'
-import fetch from 'undici-fetch'
+import fetch from 'isomorphic-fetch'
 
 /**
     curl --request POST \
