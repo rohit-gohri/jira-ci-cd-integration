@@ -1,4 +1,3 @@
-import {stringify} from 'querystring'
 import fetch from 'isomorphic-fetch'
 
 /**
@@ -22,7 +21,7 @@ export async function getJWT(
     headers: {
       'Content-Type': 'application/json',
     },
-    body: stringify({
+    body: JSON.stringify({
       audience: 'api.atlassian.com',
       grant_type: 'client_credentials',
       client_id: clientId,
