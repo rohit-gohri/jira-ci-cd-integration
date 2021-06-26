@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import createJiraAPI from './jira/api'
@@ -5,16 +6,17 @@ import createJiraAPI from './jira/api'
 async function run(): Promise<void> {
   try {
     const jiraInstance: string = core.getInput('jira_instance')
-    core.debug(`Connecting to Jira Instance "${jiraInstance}"...`)
+    core.info(`Connecting to Jira Instance "${jiraInstance}"...`)
     const clientId: string = core.getInput('client_id')
     const clientSecret: string = core.getInput('client_secret')
-    core.debug(`Connecting via "${clientId}"`)
+    core.info(`Connecting via "${clientId}"`)
 
     const jira = await createJiraAPI({
       jiraInstance,
       clientId,
       clientSecret,
     })
+    core.info(`Found cloudId: "${jira.cloudId}"`)
 
     const event: 'build' | 'deployment' =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,8 +38,8 @@ async function run(): Promise<void> {
 
     switch (event) {
       case 'build':
-        core.debug('Sending "build" event')
-        await jira.submitBuilds(
+        core.info('Sending "build" event')
+        const response = await jira.submitBuilds(
           {},
           {
             // providerMetadata: {
@@ -78,15 +80,26 @@ async function run(): Promise<void> {
             ],
           },
         )
+        core.debug(`Build Response:\n${JSON.stringify(response, null, 2)}`)
+
+        if (response.rejectedBuilds?.length) {
+          throw new Error(
+            `Invalid build generated:\n ${JSON.stringify(
+              response.rejectedBuilds,
+              null,
+              2,
+            )}`,
+          )
+        }
+        core.setOutput('Response', response.acceptedBuilds?.[0].buildNumber)
         break
       case 'deployment':
-        core.debug('Sending "deployment" event')
+        core.info('Sending "deployment" event')
         break
       default:
         throw new Error(`Invalid event_type, "${event}"`)
     }
-
-    core.setOutput('Done:', new Date().toTimeString())
+    core.setOutput('Done', new Date().toTimeString())
   } catch (error) {
     core.setFailed(error.message)
   }

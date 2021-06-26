@@ -14,6 +14,16 @@ type OperationBody<
     operations[T]['requestBody']['content']['application/json']
   : never
 
+type ResponseBody<T extends keyof operations> = Promise<
+  202 extends keyof operations[T]['responses']
+    ? // @ts-expect-error requestBody is dynamic
+      operations[T]['responses'][202]['content']['application/json']
+    : 200 extends keyof operations[T]['responses']
+    ? // @ts-expect-error requestBody is dynamic
+      operations[T]['responses'][200]['content']['application/json']
+    : never
+>
+
 export default async function createApi(options: {
   jiraInstance: string
   clientId: string
@@ -96,7 +106,11 @@ export default async function createApi(options: {
       .join('&')
   }
   return {
-    async submitBuilds(params: any, body: OperationBody<'submitBuilds'>) {
+    cloudId,
+    async submitBuilds(
+      params: any,
+      body: OperationBody<'submitBuilds'>,
+    ): ResponseBody<'submitBuilds'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -104,13 +118,20 @@ export default async function createApi(options: {
         params,
         'submitBuilds',
       )
-      return fetch(`${endpoint + basePath}/rest/builds/0.1/bulk`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body),
-      })
+      const result = await fetch(
+        `${endpoint + basePath}/rest/builds/0.1/bulk`,
+        {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(body),
+        },
+      )
+      const res = await result.json()
+      return res
     },
-    async deleteBuildsByProperty(params: {_updateSequenceNumber: any}) {
+    async deleteBuildsByProperty(params: {
+      _updateSequenceNumber: any
+    }): ResponseBody<'deleteBuildsByProperty'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -118,7 +139,7 @@ export default async function createApi(options: {
         params,
         'deleteBuildsByProperty',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/rest/builds/0.1/bulkByProperties` +
           `?${buildQuery({
             _updateSequenceNumber: params._updateSequenceNumber,
@@ -129,8 +150,13 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
-    async getBuildByKey(params: {pipelineId: any; buildNumber: any}) {
+    async getBuildByKey(params: {
+      pipelineId: any
+      buildNumber: any
+    }): ResponseBody<'getBuildByKey'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -138,7 +164,7 @@ export default async function createApi(options: {
         params,
         'getBuildByKey',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/rest/builds/0.1/pipelines/${
           params.pipelineId
         }/builds/${params.buildNumber}`,
@@ -147,12 +173,14 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
     async deleteBuildByKey(params: {
       pipelineId: any
       buildNumber: any
       _updateSequenceNumber: any
-    }) {
+    }): ResponseBody<'deleteBuildByKey'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -160,7 +188,7 @@ export default async function createApi(options: {
         params,
         'deleteBuildByKey',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/rest/builds/0.1/pipelines/${
           params.pipelineId
         }/builds/${params.buildNumber}` +
@@ -173,11 +201,13 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
     async storeDevelopmentInformation(
       params: {cloudId: any},
       body: OperationBody<'storeDevelopmentInformation'>,
-    ) {
+    ): ResponseBody<'storeDevelopmentInformation'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -185,7 +215,7 @@ export default async function createApi(options: {
         params,
         'storeDevelopmentInformation',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/jira/devinfo/0.1/cloud/${cloudId}/bulk`,
         {
           method: 'POST',
@@ -193,8 +223,13 @@ export default async function createApi(options: {
           body: JSON.stringify(body),
         },
       )
+      const res = await result.json()
+      return res
     },
-    async getRepository(params: {cloudId: any; repositoryId: any}) {
+    async getRepository(params: {
+      cloudId: any
+      repositoryId: any
+    }): ResponseBody<'getRepository'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -202,7 +237,7 @@ export default async function createApi(options: {
         params,
         'getRepository',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/jira/devinfo/0.1/cloud/${cloudId}/repository/${
           params.repositoryId
         }`,
@@ -211,12 +246,14 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
     async deleteRepository(params: {
       cloudId: any
       repositoryId: any
       _updateSequenceId: any
-    }) {
+    }): ResponseBody<'deleteRepository'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -224,7 +261,7 @@ export default async function createApi(options: {
         params,
         'deleteRepository',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/jira/devinfo/0.1/cloud/${cloudId}/repository/${
           params.repositoryId
         }` +
@@ -237,8 +274,13 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
-    async deleteByProperties(params: {cloudId: any; _updateSequenceId: any}) {
+    async deleteByProperties(params: {
+      cloudId: any
+      _updateSequenceId: any
+    }): ResponseBody<'deleteByProperties'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -246,7 +288,7 @@ export default async function createApi(options: {
         params,
         'deleteByProperties',
       )
-      return fetch(
+      const result = await fetch(
         `${
           endpoint + basePath
         }/jira/devinfo/0.1/cloud/${cloudId}/bulkByProperties` +
@@ -259,8 +301,13 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
-    async existsByProperties(params: {cloudId: any; _updateSequenceId: any}) {
+    async existsByProperties(params: {
+      cloudId: any
+      _updateSequenceId: any
+    }): ResponseBody<'existsByProperties'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -268,7 +315,7 @@ export default async function createApi(options: {
         params,
         'existsByProperties',
       )
-      return fetch(
+      const result = await fetch(
         `${
           endpoint + basePath
         }/jira/devinfo/0.1/cloud/${cloudId}/existsByProperties` +
@@ -281,6 +328,8 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
     async deleteEntity(params: {
       cloudId: any
@@ -288,7 +337,7 @@ export default async function createApi(options: {
       entityType: any
       entityId: any
       _updateSequenceId: any
-    }) {
+    }): ResponseBody<'deleteEntity'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -296,7 +345,7 @@ export default async function createApi(options: {
         params,
         'deleteEntity',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/jira/devinfo/0.1/cloud/${cloudId}/repository/${
           params.repositoryId
         }/${params.entityType}/${params.entityId}` +
@@ -309,11 +358,13 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
     async submitDeployments(
       params: any,
       body: OperationBody<'submitDeployments'>,
-    ) {
+    ): ResponseBody<'submitDeployments'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -321,13 +372,20 @@ export default async function createApi(options: {
         params,
         'submitDeployments',
       )
-      return fetch(`${endpoint + basePath}/rest/deployments/0.1/bulk`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body),
-      })
+      const result = await fetch(
+        `${endpoint + basePath}/rest/deployments/0.1/bulk`,
+        {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(body),
+        },
+      )
+      const res = await result.json()
+      return res
     },
-    async deleteDeploymentsByProperty(params: {_updateSequenceNumber: any}) {
+    async deleteDeploymentsByProperty(params: {
+      _updateSequenceNumber: any
+    }): ResponseBody<'deleteDeploymentsByProperty'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -335,7 +393,7 @@ export default async function createApi(options: {
         params,
         'deleteDeploymentsByProperty',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/rest/deployments/0.1/bulkByProperties` +
           `?${buildQuery({
             _updateSequenceNumber: params._updateSequenceNumber,
@@ -346,12 +404,14 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
     async getDeploymentByKey(params: {
       pipelineId: any
       environmentId: any
       deploymentSequenceNumber: any
-    }) {
+    }): ResponseBody<'getDeploymentByKey'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -359,7 +419,7 @@ export default async function createApi(options: {
         params,
         'getDeploymentByKey',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/rest/deployments/0.1/pipelines/${
           params.pipelineId
         }/environments/${params.environmentId}/deployments/${
@@ -370,13 +430,15 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
     async deleteDeploymentByKey(params: {
       pipelineId: any
       environmentId: any
       deploymentSequenceNumber: any
       _updateSequenceNumber: any
-    }) {
+    }): ResponseBody<'deleteDeploymentByKey'> {
       const headers = {}
       await handleSecurity(
         [{atlassianCloudOauth: []}],
@@ -384,7 +446,7 @@ export default async function createApi(options: {
         params,
         'deleteDeploymentByKey',
       )
-      return fetch(
+      const result = await fetch(
         `${endpoint + basePath}/rest/deployments/0.1/pipelines/${
           params.pipelineId
         }/environments/${params.environmentId}/deployments/${
@@ -399,6 +461,8 @@ export default async function createApi(options: {
           headers,
         },
       )
+      const res = await result.json()
+      return res
     },
   }
 }
