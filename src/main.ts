@@ -15,6 +15,7 @@ async function run(): Promise<void> {
       jiraInstance,
       clientId,
       clientSecret,
+      logger: core,
     })
     core.info(`Found cloudId: "${jira.cloudId}"`)
 
