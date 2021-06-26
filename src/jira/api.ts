@@ -127,6 +127,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async deleteBuildsByProperty(params: {
@@ -151,6 +154,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async getBuildByKey(params: {
@@ -174,6 +180,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async deleteBuildByKey(params: {
@@ -202,6 +211,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async storeDevelopmentInformation(
@@ -224,6 +236,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async getRepository(params: {
@@ -247,6 +262,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async deleteRepository(params: {
@@ -275,6 +293,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async deleteByProperties(params: {
@@ -302,6 +323,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async existsByProperties(params: {
@@ -329,6 +353,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async deleteEntity(params: {
@@ -359,6 +386,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async submitDeployments(
@@ -381,6 +411,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async deleteDeploymentsByProperty(params: {
@@ -405,6 +438,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async getDeploymentByKey(params: {
@@ -431,6 +467,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
     async deleteDeploymentByKey(params: {
@@ -462,6 +501,9 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
+      if (res.status >= 400) {
+        throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+      }
       return res
     },
   }
