@@ -54,7 +54,7 @@ async function run(): Promise<void> {
                 updateSequenceNumber: now,
                 displayName: github.context.workflow,
                 description: `${github.context.workflow} triggered by ${github.context.eventName} for commit ${github.context.sha}`,
-                url: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/runs/${github.context.runId}`,
+                url: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
                 state,
                 lastUpdated: new Date(now).toISOString(),
                 issueKeys: [issueKey],
