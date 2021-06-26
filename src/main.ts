@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import github from '@actions/github'
+import * as github from '@actions/github'
 import createJiraAPI from './jira/api'
 
 async function run(): Promise<void> {
