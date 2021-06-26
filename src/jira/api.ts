@@ -29,7 +29,7 @@ export default async function createApi(options: {
   clientId: string
   clientSecret: string
 }) {
-  const basePath = ''
+  const basePath = '/jira'
   const endpoint = 'https://api.atlassian.com'
   const cloudId = await getCloudId(options.jiraInstance)
 
@@ -119,7 +119,7 @@ export default async function createApi(options: {
         'submitBuilds',
       )
       const result = await fetch(
-        `${endpoint + basePath}/rest/builds/0.1/bulk`,
+        `${endpoint + basePath}/builds/0.1/cloud/${cloudId}/bulk`,
         {
           method: 'POST',
           headers,
@@ -143,7 +143,7 @@ export default async function createApi(options: {
         'deleteBuildsByProperty',
       )
       const result = await fetch(
-        `${endpoint + basePath}/rest/builds/0.1/bulkByProperties` +
+        `${endpoint + basePath}/builds/0.1/cloud/${cloudId}/bulkByProperties` +
           `?${buildQuery({
             _updateSequenceNumber: params._updateSequenceNumber,
           })}`,
@@ -171,7 +171,7 @@ export default async function createApi(options: {
         'getBuildByKey',
       )
       const result = await fetch(
-        `${endpoint + basePath}/rest/builds/0.1/pipelines/${
+        `${endpoint + basePath}/builds/0.1/cloud/${cloudId}/pipelines/${
           params.pipelineId
         }/builds/${params.buildNumber}`,
         {
@@ -198,7 +198,7 @@ export default async function createApi(options: {
         'deleteBuildByKey',
       )
       const result = await fetch(
-        `${endpoint + basePath}/rest/builds/0.1/pipelines/${
+        `${endpoint + basePath}/builds/0.1/cloud/${cloudId}/pipelines/${
           params.pipelineId
         }/builds/${params.buildNumber}` +
           `?${buildQuery({
@@ -217,7 +217,7 @@ export default async function createApi(options: {
       return res
     },
     async storeDevelopmentInformation(
-      params: {cloudId: any},
+      params: {},
       body: OperationBody<'storeDevelopmentInformation'>,
     ): ResponseBody<'storeDevelopmentInformation'> {
       const headers = {}
@@ -228,7 +228,7 @@ export default async function createApi(options: {
         'storeDevelopmentInformation',
       )
       const result = await fetch(
-        `${endpoint + basePath}/jira/devinfo/0.1/cloud/${cloudId}/bulk`,
+        `${endpoint + basePath}/devinfo/0.1/cloud/${cloudId}/bulk`,
         {
           method: 'POST',
           headers,
@@ -242,7 +242,6 @@ export default async function createApi(options: {
       return res
     },
     async getRepository(params: {
-      cloudId: any
       repositoryId: any
     }): ResponseBody<'getRepository'> {
       const headers = {}
@@ -253,7 +252,7 @@ export default async function createApi(options: {
         'getRepository',
       )
       const result = await fetch(
-        `${endpoint + basePath}/jira/devinfo/0.1/cloud/${cloudId}/repository/${
+        `${endpoint + basePath}/devinfo/0.1/cloud/${cloudId}/repository/${
           params.repositoryId
         }`,
         {
@@ -268,7 +267,6 @@ export default async function createApi(options: {
       return res
     },
     async deleteRepository(params: {
-      cloudId: any
       repositoryId: any
       _updateSequenceId: any
     }): ResponseBody<'deleteRepository'> {
@@ -280,7 +278,7 @@ export default async function createApi(options: {
         'deleteRepository',
       )
       const result = await fetch(
-        `${endpoint + basePath}/jira/devinfo/0.1/cloud/${cloudId}/repository/${
+        `${endpoint + basePath}/devinfo/0.1/cloud/${cloudId}/repository/${
           params.repositoryId
         }` +
           `?${buildQuery({
@@ -299,7 +297,6 @@ export default async function createApi(options: {
       return res
     },
     async deleteByProperties(params: {
-      cloudId: any
       _updateSequenceId: any
     }): ResponseBody<'deleteByProperties'> {
       const headers = {}
@@ -310,9 +307,7 @@ export default async function createApi(options: {
         'deleteByProperties',
       )
       const result = await fetch(
-        `${
-          endpoint + basePath
-        }/jira/devinfo/0.1/cloud/${cloudId}/bulkByProperties` +
+        `${endpoint + basePath}/devinfo/0.1/cloud/${cloudId}/bulkByProperties` +
           `?${buildQuery({
             _updateSequenceId: params._updateSequenceId,
           })}`,
@@ -329,7 +324,6 @@ export default async function createApi(options: {
       return res
     },
     async existsByProperties(params: {
-      cloudId: any
       _updateSequenceId: any
     }): ResponseBody<'existsByProperties'> {
       const headers = {}
@@ -342,7 +336,7 @@ export default async function createApi(options: {
       const result = await fetch(
         `${
           endpoint + basePath
-        }/jira/devinfo/0.1/cloud/${cloudId}/existsByProperties` +
+        }/devinfo/0.1/cloud/${cloudId}/existsByProperties` +
           `?${buildQuery({
             _updateSequenceId: params._updateSequenceId,
           })}`,
@@ -359,7 +353,6 @@ export default async function createApi(options: {
       return res
     },
     async deleteEntity(params: {
-      cloudId: any
       repositoryId: any
       entityType: any
       entityId: any
@@ -373,7 +366,7 @@ export default async function createApi(options: {
         'deleteEntity',
       )
       const result = await fetch(
-        `${endpoint + basePath}/jira/devinfo/0.1/cloud/${cloudId}/repository/${
+        `${endpoint + basePath}/devinfo/0.1/cloud/${cloudId}/repository/${
           params.repositoryId
         }/${params.entityType}/${params.entityId}` +
           `?${buildQuery({
@@ -403,7 +396,7 @@ export default async function createApi(options: {
         'submitDeployments',
       )
       const result = await fetch(
-        `${endpoint + basePath}/rest/deployments/0.1/bulk`,
+        `${endpoint + basePath}/deployments/0.1/cloud/${cloudId}/bulk`,
         {
           method: 'POST',
           headers,
@@ -427,7 +420,9 @@ export default async function createApi(options: {
         'deleteDeploymentsByProperty',
       )
       const result = await fetch(
-        `${endpoint + basePath}/rest/deployments/0.1/bulkByProperties` +
+        `${
+          endpoint + basePath
+        }/deployments/0.1/cloud/${cloudId}/bulkByProperties` +
           `?${buildQuery({
             _updateSequenceNumber: params._updateSequenceNumber,
           })}`,
@@ -456,7 +451,7 @@ export default async function createApi(options: {
         'getDeploymentByKey',
       )
       const result = await fetch(
-        `${endpoint + basePath}/rest/deployments/0.1/pipelines/${
+        `${endpoint + basePath}/deployments/0.1/cloud/${cloudId}/pipelines/${
           params.pipelineId
         }/environments/${params.environmentId}/deployments/${
           params.deploymentSequenceNumber
@@ -486,7 +481,7 @@ export default async function createApi(options: {
         'deleteDeploymentByKey',
       )
       const result = await fetch(
-        `${endpoint + basePath}/rest/deployments/0.1/pipelines/${
+        `${endpoint + basePath}/deployments/0.1/cloud/${cloudId}/pipelines/${
           params.pipelineId
         }/environments/${params.environmentId}/deployments/${
           params.deploymentSequenceNumber
