@@ -17,7 +17,7 @@ See <https://support.atlassian.com/jira-cloud-administration/docs/integrate-with
   with:
     jira_instance: companyname
     client_id: ${{ secrets.JIRA_CLIENT_ID }}
-    client_secret: ${{ secrets.JIRA_CLIENT_SECRET }
+    client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
     event_type: build # Optional ("build" or "deployment", default is "build")
     state: successful # Optional ("successful" or "failed", default is "successful")
 ```
