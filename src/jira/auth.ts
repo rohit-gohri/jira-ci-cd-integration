@@ -19,6 +19,9 @@ export async function getJWT(
 ): Promise<string> {
   const res = await fetch('https://api.atlassian.com/oauth/token', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: stringify({
       audience: 'api.atlassian.com',
       grant_type: 'client_credentials',

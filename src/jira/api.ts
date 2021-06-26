@@ -124,7 +124,10 @@ export default async function createApi(options: {
         `${endpoint + basePath}/builds/0.1/cloud/${cloudId}/bulk`,
         {
           method: 'POST',
-          headers,
+          headers: {
+            ...headers,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify(body),
         },
       )
@@ -237,7 +240,10 @@ export default async function createApi(options: {
         `${endpoint + basePath}/devinfo/0.1/cloud/${cloudId}/bulk`,
         {
           method: 'POST',
-          headers,
+          headers: {
+            ...headers,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify(body),
         },
       )
@@ -411,7 +417,10 @@ export default async function createApi(options: {
         `${endpoint + basePath}/deployments/0.1/cloud/${cloudId}/bulk`,
         {
           method: 'POST',
-          headers,
+          headers: {
+            ...headers,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify(body),
         },
       )
