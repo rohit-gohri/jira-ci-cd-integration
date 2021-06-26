@@ -27,7 +27,13 @@ export async function getJWT(
     }),
   })
   if (res.status >= 400) {
-    throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+    throw new Error(
+      `Auth Error! Response ${res.status}:\n ${JSON.stringify(
+        await res.text(),
+        null,
+        2,
+      )}`,
+    )
   }
   return res.text()
 }
