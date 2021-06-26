@@ -127,7 +127,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -154,7 +154,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -180,7 +180,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -211,7 +211,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -236,7 +236,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -261,7 +261,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -291,7 +291,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -318,7 +318,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -347,7 +347,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -379,7 +379,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -404,7 +404,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -433,7 +433,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -462,7 +462,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
@@ -496,7 +496,7 @@ export default async function createApi(options: {
         },
       )
       const res = await result.json()
-      if (res.status >= 400) {
+      if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
       }
       return res
