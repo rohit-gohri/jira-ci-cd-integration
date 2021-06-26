@@ -128,7 +128,7 @@ export default async function createApi(options: {
           body: JSON.stringify(body),
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger?.debug(`Requesting url: ${result.url}. ${JSON.stringify(headers)}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)

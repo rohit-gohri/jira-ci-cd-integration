@@ -26,6 +26,9 @@ export async function getJWT(
       client_secret: clientSecret,
     }),
   })
+  if (res.status >= 400) {
+    throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
+  }
   return res.text()
 }
 
