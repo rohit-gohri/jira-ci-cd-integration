@@ -71,7 +71,6 @@ async function run(): Promise<void> {
                       repositoryUri: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}`,
                     },
                     ref: {
-                      // TODO: slice refs/heads/ from this
                       name: branchName,
                       uri: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/tree/${branchName}`,
                     },
