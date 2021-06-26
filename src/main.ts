@@ -1,16 +1,88 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import github from '@actions/github'
+import createJiraAPI from './jira/api'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    const jiraInstance: string = core.getInput('jira_instance')
+    core.debug(`Connecting to Jira Instance "${jiraInstance}"...`)
+    const clientId: string = core.getInput('client_id')
+    const clientSecret: string = core.getInput('client_secret')
+    core.debug(`Connecting via "${clientId}"`)
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const jira = await createJiraAPI({
+      jiraInstance,
+      clientId,
+      clientSecret,
+    })
 
-    core.setOutput('time', new Date().toTimeString())
+    const event: 'build' | 'deployment' =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (core.getInput('event_type') as any) || 'build'
+    const state: 'successful' | 'failed' =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (core.getInput('state') as any) || 'successful'
+
+    const now = Date.now()
+
+    switch (event) {
+      case 'build':
+        core.debug('Sending "build" event')
+        await jira.submitBuilds(
+          {},
+          {
+            // providerMetadata: {
+            //   product: `https://github.com/rohit-gohri/jira-ci-cd-integration`,
+            // },
+            builds: [
+              {
+                schemaVersion: '1.0',
+                pipelineId: github.context.runId.toString(),
+                buildNumber: github.context.runNumber,
+                updateSequenceNumber: now,
+                displayName: github.context.workflow,
+                description: `${github.context.workflow} triggered by ${github.context.eventName} for commit ${github.context.sha}`,
+                url: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/runs/${github.context.runId}`,
+                state,
+                lastUpdated: new Date(now).toISOString(),
+                // TODO: Parse from branch name
+                issueKeys: [],
+                // testInfo: {
+                //   totalNumber: 150,
+                //   numberPassed: 145,
+                //   numberFailed: 5,
+                //   numberSkipped: 0,
+                // },
+                references: [
+                  {
+                    commit: {
+                      id: github.context.sha,
+                      repositoryUri: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}`,
+                    },
+                    ref: {
+                      // TODO: slice refs/heads/ from this
+                      name: github.context.ref.split('/')[2],
+                      uri: `${github.context.serverUrl}/${
+                        github.context.repo.owner
+                      }/${github.context.repo.repo}/tree/${
+                        github.context.ref.split('/')[2]
+                      }`,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        )
+        break
+      case 'deployment':
+        core.debug('Sending "deployment" event')
+        break
+      default:
+        throw new Error(`Invalid event_type, "${event}"`)
+    }
+
+    core.setOutput('Done:', new Date().toTimeString())
   } catch (error) {
     core.setFailed(error.message)
   }
