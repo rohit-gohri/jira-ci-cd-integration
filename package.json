@@ -1,6 +1,6 @@
 {
-  "name": "jira-github-action",
-  "version": "0.0.0",
+  "name": "jira-ci-cd-integration",
+  "version": "0.0.1",
   "private": true,
   "description": "TypeScript template action",
   "main": "lib/main.js",
@@ -10,7 +10,6 @@
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build lib/main.js --source-map --license licenses.txt",
-    "transpile": "babel-changed --src dist --dest transpiled --source-maps false",
     "test": "jest",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
@@ -19,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rohit-gohri/jira-github-action.git"
+    "url": "git+https://github.com/rohit-gohri/jira-ci-cd-integration.git"
   },
   "keywords": [
     "actions",
@@ -36,10 +35,6 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.14.5",
-    "@babel/core": "^7.14.6",
-    "@babel/preset-env": "^7.14.7",
-    "@smpx/babel-changed": "^0.5.0",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.9",
