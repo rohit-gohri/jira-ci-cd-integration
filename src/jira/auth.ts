@@ -37,7 +37,8 @@ export async function getJWT(
       )}`,
     )
   }
-  return res.text()
+  const {access_token} = await res.json()
+  return access_token
 }
 
 /**
