@@ -10,8 +10,7 @@ import {operations} from './schema'
 type OperationBody<
   T extends keyof operations
 > = 'requestBody' extends keyof operations[T]
-  ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error requestBody is dynamic
+  ? // @ts-expect-error requestBody is dynamic
     operations[T]['requestBody']['content']['application/json']
   : never
 
