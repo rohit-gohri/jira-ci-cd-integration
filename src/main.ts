@@ -24,6 +24,15 @@ async function run(): Promise<void> {
       (core.getInput('state') as any) || 'successful'
 
     const now = Date.now()
+    const branchName = github.context.ref.split('/')[2]
+    const issueKey =
+      core.getInput('issue') || branchName.match(/(\w+)-(\d+)/)?.[0]
+
+    if (!issueKey) {
+      throw new Error(
+        `Could not parse issue key from branch name, "${branchName}"`,
+      )
+    }
 
     switch (event) {
       case 'build':
@@ -45,8 +54,7 @@ async function run(): Promise<void> {
                 url: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/runs/${github.context.runId}`,
                 state,
                 lastUpdated: new Date(now).toISOString(),
-                // TODO: Parse from branch name
-                issueKeys: [],
+                issueKeys: [issueKey],
                 // testInfo: {
                 //   totalNumber: 150,
                 //   numberPassed: 145,
@@ -61,12 +69,8 @@ async function run(): Promise<void> {
                     },
                     ref: {
                       // TODO: slice refs/heads/ from this
-                      name: github.context.ref.split('/')[2],
-                      uri: `${github.context.serverUrl}/${
-                        github.context.repo.owner
-                      }/${github.context.repo.repo}/tree/${
-                        github.context.ref.split('/')[2]
-                      }`,
+                      name: branchName,
+                      uri: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/tree/${branchName}`,
                     },
                   },
                 ],
