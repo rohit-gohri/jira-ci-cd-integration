@@ -1672,4 +1672,4 @@ export interface operations {
   }
 }
 
-export interface external {}
+export type external = {}

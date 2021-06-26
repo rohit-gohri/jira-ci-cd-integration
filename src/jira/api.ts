@@ -108,7 +108,7 @@ export default async function createApi(options: {
       return fetch(`${endpoint + basePath}/rest/builds/0.1/bulk`, {
         method: 'POST',
         headers,
-        body,
+        body: JSON.stringify(body),
       })
     },
     async deleteBuildsByProperty(params: {_updateSequenceNumber: any}) {
@@ -191,7 +191,7 @@ export default async function createApi(options: {
         {
           method: 'POST',
           headers,
-          body,
+          body: JSON.stringify(body),
         },
       )
     },
@@ -325,7 +325,7 @@ export default async function createApi(options: {
       return fetch(`${endpoint + basePath}/rest/deployments/0.1/bulk`, {
         method: 'POST',
         headers,
-        body,
+        body: JSON.stringify(body),
       })
     },
     async deleteDeploymentsByProperty(params: {_updateSequenceNumber: any}) {

@@ -28,7 +28,7 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^5.0.0",
-    "undici-fetch": "^0.3.0"
+    "undici-fetch": "^1.0.0-rc.3"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",

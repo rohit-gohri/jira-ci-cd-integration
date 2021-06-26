@@ -26,7 +26,7 @@ export async function getJWT(
       client_secret: clientSecret,
     }),
   })
-  return res.body
+  return res.text()
 }
 
 /**
