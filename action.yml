@@ -1,0 +1,30 @@
+name: 'Jira Github Integration'
+description: 'Send Github Actions Build Information to Jira'
+author: 'Rohit Gohri'
+inputs:
+  jira_instance:
+    required: true
+    description: 'Sub Domain of Jira Cloud Instance'
+  client_id:
+    required: true
+    description: 'ClientID of OAuth Creds'
+  client_secret:
+    required: true
+    description: 'ClientSecret of OAuth Creds'
+  token:
+    required: false
+    description: 'Github Token to get commit message in Pull Request Events'
+  event_type:
+    required: false
+    description: '"build" or "deployment"'
+    default: build
+  state:
+    required: false
+    description: '"successful" or "failed"'
+    default: successful
+  issue:
+    required: false
+    description: Will be parsed from branch name automatically
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
