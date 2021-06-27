@@ -6,7 +6,12 @@ import {getBranchName, getIssueKeys, getState} from './utils'
 export async function sendBuildInfo(jira: Jira): Promise<void> {
   const now = Date.now()
   const branchName = getBranchName()
-  const issueKeys = getIssueKeys()
+  const issueKeys = await getIssueKeys()
+
+  if (!issueKeys.length) {
+    core.info('No issue keys found to send "build" event for')
+    return
+  }
 
   core.info('Sending "build" event')
   const response = await jira.submitBuilds(

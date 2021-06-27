@@ -46,5 +46,6 @@ jobs:
           event_type: build
           state: ${{ job.status }}
           jira_instance: boringdownload
+          token: ${{ secrets.GITHUB_TOKEN }}
           client_id: ${{ secrets.JIRA_CLIENT_ID }}
           client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}

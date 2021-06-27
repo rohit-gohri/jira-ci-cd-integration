@@ -5,7 +5,12 @@ import {getIssueKeys, getState} from './utils'
 
 export async function sendDeploymnetInfo(jira: Jira): Promise<void> {
   const now = Date.now()
-  const issueKeys = getIssueKeys()
+  const issueKeys = await getIssueKeys()
+
+  if (!issueKeys.length) {
+    core.info('No issue keys found to send "deployment" event for')
+    return
+  }
 
   core.info('Sending "deployment" event')
   const response = await jira.submitDeployments(

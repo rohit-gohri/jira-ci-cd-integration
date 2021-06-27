@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+import {PullRequestEvent, PushEvent} from '@octokit/webhooks-definitions/schema'
 import {getLogger} from '../utils/logger'
 
 export function getBranchName(): string | undefined {
@@ -28,18 +29,37 @@ export function getState(): 'successful' | 'failed' | 'cancelled' {
  * @see https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#push
  * @returns will give latest commit message if ̉push event
  */
-export function getCommitMessage(): string | undefined {
-  const latestCommit = (github.context.payload.commits as unknown[])?.pop()
-  const commitMessage = (latestCommit as {message: string})?.message
+export async function getCommitMessage(): Promise<string | undefined> {
+  const pushPayload = github.context.payload as PushEvent
+  let commitMessage = pushPayload.head_commit?.message
+
+  // if head_commit not available
+  if (!commitMessage) {
+    const latestCommit = pushPayload.commits.pop()
+    commitMessage = latestCommit?.message
+  }
+  // if PR
+  if (!commitMessage && github.context.eventName === 'pull_request') {
+    const prEvent = github.context.payload as PullRequestEvent
+    const {head} = prEvent.pull_request
+    const res = await github
+      .getOctokit(core.getInput('token'))
+      .rest.git.getCommit({
+        commit_sha: head.sha,
+        repo: head.repo.name,
+        owner: head.repo.owner.login,
+      })
+    commitMessage = res.data.message
+  }
 
   getLogger().debug(`CommitMessage: ${commitMessage}`)
 
   return commitMessage
 }
 
-export function getIssueKeys(): string[] {
+export async function getIssueKeys(): Promise<string[]> {
   const branchName = getBranchName()
-  const commitMessage = getCommitMessage()
+  const commitMessage = await getCommitMessage()
 
   const fromInput = core.getInput('issue')
 
@@ -56,12 +76,6 @@ export function getIssueKeys(): string[] {
 
   if (!issueKeys.length && process.env.JIRA_DEFAULT_TEST_ISSUE) {
     issueKeys.push(process.env.JIRA_DEFAULT_TEST_ISSUE)
-  }
-
-  if (!issueKeys.length) {
-    throw new Error(
-      `Could not parse any issue keys. Branch name, "${branchName}"`,
-    )
   }
 
   getLogger().debug(`IssueKeys: "${issueKeys}"`)
