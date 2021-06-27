@@ -41,7 +41,7 @@ jobs:
       - name: Test Action
         uses: ./
         env:
-          JIRA_DEFAULT_TEST_ISSUE: JCI-7
+          JIRA_DEFAULT_TEST_ISSUE: 'JCI-7'
         with:
           event_type: build
           state: ${{ job.status }}
