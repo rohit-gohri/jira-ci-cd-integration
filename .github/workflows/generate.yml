@@ -30,13 +30,6 @@ jobs:
               echo "create_release=yes" >> $GITHUB_ENV
           fi
 
-      - name: Checkout release branch
-        if: ${{ env.create_release == 'yes' }}
-        uses: actions/checkout@v2
-        with:
-          path: release
-          ref: releases/v${{ env.major_version }}
-
       - name: Cache node modules
         if: ${{ env.create_release == 'yes' }}
         uses: actions/cache@v2
@@ -65,6 +58,13 @@ jobs:
         if: ${{ env.create_release == 'yes' }}
         run: npm run package
 
+      - name: Checkout release branch
+        if: ${{ env.create_release == 'yes' }}
+        uses: actions/checkout@v2
+        with:
+          path: release
+          ref: releases/v${{ env.major_version }}
+
       - name: Copy to release branch
         if: ${{ env.create_release == 'yes' }}
         run: |
@@ -81,6 +81,7 @@ jobs:
           head -n -4 .gitignore > release/.gitignore
 
       - name: Commit and push to release branch
+        working-directory: release
         if: ${{ env.create_release == 'yes' }}
         run: |
           git config user.name github-actions[bot]
