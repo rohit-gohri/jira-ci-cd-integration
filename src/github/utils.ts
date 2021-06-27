@@ -72,7 +72,7 @@ export async function getIssueKeys(): Promise<string[]> {
   const issueKeys = [fromInput, fromBranch, fromCommit].filter(
     (value, index, array) => {
       // Deduplicate and remove nill values
-      return value != null && array.indexOf(value) === index
+      return value && array.indexOf(value) === index
     },
   ) as string[]
 
