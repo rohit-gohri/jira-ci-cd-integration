@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import {getLogger} from '../utils/logger'
 
 /**
     curl --request POST \
@@ -55,7 +56,10 @@ export async function getCloudId(jiraInstance: string): Promise<string> {
 
     return json.cloudId
   } catch (err) {
-    console.error(err, 'Could not get cloudId, check "jiraInstance" is correct')
+    getLogger().info(
+      err,
+      'Could not get cloudId, check "jiraInstance" is correct',
+    )
     throw err
   }
 }

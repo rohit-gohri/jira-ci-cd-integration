@@ -1,11 +1,13 @@
 import * as core from '@actions/core'
 import createJiraAPI from '../jira/api'
+import {setLogger} from '../utils/logger'
 import {sendBuildInfo} from './builds'
 import {sendDeploymnetInfo} from './deployments'
 
 async function run(): Promise<void> {
   // const now = Date.now()
   try {
+    setLogger(core)
     const jiraInstance: string = core.getInput('jira_instance')
     core.info(`Connecting to Jira Instance "${jiraInstance}"...`)
     const clientId: string = core.getInput('client_id')
@@ -16,7 +18,6 @@ async function run(): Promise<void> {
       jiraInstance,
       clientId,
       clientSecret,
-      logger: core,
     })
     core.info(`Found cloudId: "${jira.cloudId}"`)
 
