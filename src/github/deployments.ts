@@ -1,15 +1,11 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {Jira} from '../jira/api'
-import {getIssueKey} from './utils'
+import {getIssueKeys, getState} from './utils'
 
 export async function sendDeploymnetInfo(jira: Jira): Promise<void> {
-  const state: 'successful' | 'failed' =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (core.getInput('state') as any) || 'successful'
-
   const now = Date.now()
-  const issueKey = getIssueKey()
+  const issueKeys = getIssueKeys()
 
   core.info('Sending "deployment" event')
   const response = await jira.submitDeployments(
@@ -36,9 +32,9 @@ export async function sendDeploymnetInfo(jira: Jira): Promise<void> {
           displayName: github.context.workflow,
           description: `${github.context.workflow} triggered by ${github.context.eventName} for commit ${github.context.sha}`,
           url: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
-          state,
+          state: getState(),
           lastUpdated: new Date(now).toISOString(),
-          issueKeys: [issueKey],
+          issueKeys,
           // testInfo: {
           //   totalNumber: 150,
           //   numberPassed: 145,
