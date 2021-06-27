@@ -11,12 +11,35 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: |
-          npm install
-      - run: |
-          npm run all
-      - uses: ./
+      - name: Checkout commit
+        uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: npm
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔨 Build Project
+        run: npm run package
+
+      - name: Test Action
+        uses: ./
         with:
           jira_instance: boringdownload
           client_id: ${{ secrets.JIRA_CLIENT_ID }}

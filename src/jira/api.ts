@@ -4,6 +4,7 @@
  * @see https://redocly.github.io/redoc/?url=https://developer.atlassian.com/cloud/jira/software/on-premise-swagger.json
  */
 import fetch from 'isomorphic-fetch'
+import {ReturnTypeResolved} from '../utils/types'
 import {getCloudId, getJWT} from './auth'
 import {operations} from './schema'
 
@@ -23,6 +24,8 @@ type ResponseBody<T extends keyof operations> = Promise<
       operations[T]['responses'][200]['content']['application/json']
     : never
 >
+
+export type Jira = ReturnTypeResolved<typeof createApi>
 
 export default async function createApi(options: {
   jiraInstance: string
