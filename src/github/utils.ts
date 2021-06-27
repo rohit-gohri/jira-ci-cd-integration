@@ -30,25 +30,27 @@ export function getState(): 'successful' | 'failed' | 'cancelled' {
  * @returns will give latest commit message if ̉push event
  */
 export async function getCommitMessage(): Promise<string | undefined> {
-  const pushPayload = github.context.payload as PushEvent
-  let commitMessage = pushPayload.head_commit?.message
+  const token = core.getInput('token')
+  let commitMessage = github.context.payload.head_commit?.message
 
-  // if head_commit not available
-  if (!commitMessage) {
-    const latestCommit = pushPayload.commits.pop()
-    commitMessage = latestCommit?.message
+  if (github.context.eventName === 'push') {
+    const pushPayload = github.context.payload as PushEvent
+
+    // if head_commit not available
+    if (!commitMessage) {
+      const latestCommit = pushPayload.commits.pop()
+      commitMessage = latestCommit?.message
+    }
   }
   // if PR
-  if (!commitMessage && github.context.eventName === 'pull_request') {
+  if (!commitMessage && token && github.context.eventName === 'pull_request') {
     const prEvent = github.context.payload as PullRequestEvent
     const {head} = prEvent.pull_request
-    const res = await github
-      .getOctokit(core.getInput('token'))
-      .rest.git.getCommit({
-        commit_sha: head.sha,
-        repo: head.repo.name,
-        owner: head.repo.owner.login,
-      })
+    const res = await github.getOctokit(token).rest.git.getCommit({
+      commit_sha: head.sha,
+      repo: head.repo.name,
+      owner: head.repo.owner.login,
+    })
     commitMessage = res.data.message
   }
 
