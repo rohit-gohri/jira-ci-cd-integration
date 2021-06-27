@@ -1,12 +1,22 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import createJiraAPI from '../jira/api'
+import {setLogger} from '../utils/logger'
 import {sendBuildInfo} from './builds'
 import {sendDeploymnetInfo} from './deployments'
 
 async function run(): Promise<void> {
   // const now = Date.now()
   try {
+    setLogger(core)
+    if (
+      github.context.eventName !== 'pull_request' &&
+      github.context.eventName !== 'push'
+    ) {
+      core.info(`Can only be used with "pull_request" and "push" events`)
+      return
+    }
+
     const jiraInstance: string = core.getInput('jira_instance')
     core.info(`Connecting to Jira Instance "${jiraInstance}"...`)
     const clientId: string = core.getInput('client_id')
@@ -17,23 +27,12 @@ async function run(): Promise<void> {
       jiraInstance,
       clientId,
       clientSecret,
-      logger: core,
     })
     core.info(`Found cloudId: "${jira.cloudId}"`)
 
     const event: 'build' | 'deployment' =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (core.getInput('event_type') as any) || 'build'
-
-    const branchName = github.context.ref.split('/')[2]
-    const issueKey =
-      core.getInput('issue') || branchName.match(/(\w+)-(\d+)/)?.[0]
-
-    if (!issueKey) {
-      throw new Error(
-        `Could not parse issue key from branch name, "${branchName}"`,
-      )
-    }
 
     switch (event) {
       case 'build':

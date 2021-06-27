@@ -4,16 +4,16 @@
  * @see https://redocly.github.io/redoc/?url=https://developer.atlassian.com/cloud/jira/software/on-premise-swagger.json
  */
 import fetch from 'isomorphic-fetch'
+import {getLogger} from '../utils/logger'
 import {ReturnTypeResolved} from '../utils/types'
 import {getCloudId, getJWT} from './auth'
 import {operations} from './schema'
 
-type OperationBody<
-  T extends keyof operations
-> = 'requestBody' extends keyof operations[T]
-  ? // @ts-expect-error requestBody is dynamic
-    operations[T]['requestBody']['content']['application/json']
-  : never
+type OperationBody<T extends keyof operations> =
+  'requestBody' extends keyof operations[T]
+    ? // @ts-expect-error requestBody is dynamic
+      operations[T]['requestBody']['content']['application/json']
+    : never
 
 type ResponseBody<T extends keyof operations> = Promise<
   202 extends keyof operations[T]['responses']
@@ -31,12 +31,11 @@ export default async function createApi(options: {
   jiraInstance: string
   clientId: string
   clientSecret: string
-  logger?: {debug: typeof console.log; info: typeof console.log}
 }) {
+  const logger = getLogger()
   const basePath = '/jira'
   const endpoint = 'https://api.atlassian.com'
   const cloudId = await getCloudId(options.jiraInstance)
-  const {logger} = options
 
   const securityHandlers: Record<string, Function> = {
     atlassianCloudOauth: async (headers: Record<string, string>) => {
@@ -134,7 +133,7 @@ export default async function createApi(options: {
           body: JSON.stringify(body),
         },
       )
-      logger?.debug(`Requesting url: ${result.url}}`)
+      logger.debug(`Requesting url: ${result.url}}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -162,7 +161,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -189,7 +188,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -221,7 +220,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -250,7 +249,7 @@ export default async function createApi(options: {
           body: JSON.stringify(body),
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -276,7 +275,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -307,7 +306,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -335,7 +334,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -365,7 +364,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -398,7 +397,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -427,7 +426,7 @@ export default async function createApi(options: {
           body: JSON.stringify(body),
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -457,7 +456,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -487,7 +486,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
@@ -522,7 +521,7 @@ export default async function createApi(options: {
           headers,
         },
       )
-      logger?.debug(`Requesting url: ${result.url}`)
+      logger.debug(`Requesting url: ${result.url}`)
       const res = await result.json()
       if (result.status >= 400) {
         throw new Error(`Error Response:\n ${JSON.stringify(res, null, 2)}`)
