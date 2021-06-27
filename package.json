@@ -10,6 +10,7 @@
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
+    "lint:fix": "npm run lint -- --fix ",
     "prepackage": "npm run build",
     "package": "npm run package:action",
     "package:action": "ncc build lib/github/main.js --source-map --license licenses.txt",
