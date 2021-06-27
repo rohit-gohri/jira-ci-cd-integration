@@ -69,8 +69,9 @@ jobs:
         if: ${{ env.create_release == 'yes' }}
         run: |
           cp -r dist release
-          cp README.md release/
+          cp -r .github release
           cp -r docs release
+          cp README.md release/
           cp package.json release/
           cp package-lock.json release/
           cp action.yml release/
