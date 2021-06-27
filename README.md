@@ -1,20 +1,41 @@
 <p align="center">
+  
+  [![Github Release](https://img.shields.io/github/v/release/rohit-gohri/jira-ci-cd-integration?style=flat-square)](https://github.com/rohit-gohri/jira-ci-cd-integration/releases)
+  
   <a href="https://github.com/rohit-gohri/jira-ci-cd-integration/actions"><img alt="action status" src="https://github.com/rohit-gohri/jira-ci-cd-integration/workflows/build-test/badge.svg"></a>
+
 </p>
 
 # Jira CI/CD Integration
 
-## Prerequisite
+Integrate your CI/CD pipeline information into the Jira Builds/Deployments Panel.
+
+> Only supports Jira Cloud. Does not support Jira Server (hosted)
+
+![Builds Panel Preview](./docs/builds-panel.png)
+
+## Prerequisites
 
 ### Generate Credentials
 
-See <https://support.atlassian.com/jira-cloud-administration/docs/integrate-with-self-hosted-tools-using-oauth/>
+Generate new OAuth Credentials and copy
 
-Generate OAuth Credentials : Client ID and Client Secret
+**See:** <https://support.atlassian.com/jira-cloud-administration/docs/integrate-with-self-hosted-tools-using-oauth/>
 
-## Usage
+![OAuth Creds Screen](./docs/oauth-creds.png)
 
-### With Github Actions
+## Usage With Github Actions
+
+### Add OAuth Creds as secrets to Github
+
+**See:** <https://docs.github.com/en/actions/reference/encrypted-secrets>
+
+- Add Client ID as `JIRA_CLIENT_ID`
+- Add Client Secret as `JIRA_CLIENT_SECRET`
+
+![Github Secrets](./docs/github-secrets.png)
+
+### Update Github Workflow
 
 ```yaml
 - name: Jira Integration

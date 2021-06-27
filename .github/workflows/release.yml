@@ -1,0 +1,21 @@
+name: 'release'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm install
+      - run: |
+          npm run all
+      - name: Commit deps
+        run: |
+          git add dist
+          git commit -a -m "prod dependencies"
+          git push origin releases/v1 --force
