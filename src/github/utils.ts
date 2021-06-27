@@ -64,5 +64,7 @@ export function getIssueKeys(): string[] {
     )
   }
 
+  getLogger().debug(`IssueKeys: "${issueKeys}"`)
+
   return issueKeys
 }
