@@ -9,12 +9,11 @@ import {ReturnTypeResolved} from '../utils/types'
 import {getCloudId, getJWT} from './auth'
 import {operations} from './schema'
 
-type OperationBody<
-  T extends keyof operations
-> = 'requestBody' extends keyof operations[T]
-  ? // @ts-expect-error requestBody is dynamic
-    operations[T]['requestBody']['content']['application/json']
-  : never
+type OperationBody<T extends keyof operations> =
+  'requestBody' extends keyof operations[T]
+    ? // @ts-expect-error requestBody is dynamic
+      operations[T]['requestBody']['content']['application/json']
+    : never
 
 type ResponseBody<T extends keyof operations> = Promise<
   202 extends keyof operations[T]['responses']
