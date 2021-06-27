@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {Jira} from '../jira/api'
+import {getIssueKey} from './utils'
 
 export async function sendDeploymnetInfo(jira: Jira): Promise<void> {
   const state: 'successful' | 'failed' =
@@ -8,15 +9,8 @@ export async function sendDeploymnetInfo(jira: Jira): Promise<void> {
     (core.getInput('state') as any) || 'successful'
 
   const now = Date.now()
-  const branchName = github.context.ref.split('/')[2]
-  const issueKey =
-    core.getInput('issue') || branchName.match(/(\w+)-(\d+)/)?.[0]
+  const issueKey = getIssueKey()
 
-  if (!issueKey) {
-    throw new Error(
-      `Could not parse issue key from branch name, "${branchName}"`,
-    )
-  }
   core.info('Sending "deployment" event')
   const response = await jira.submitDeployments(
     {},

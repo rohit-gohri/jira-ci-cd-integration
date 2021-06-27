@@ -1,5 +1,4 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github'
 import createJiraAPI from '../jira/api'
 import {sendBuildInfo} from './builds'
 import {sendDeploymnetInfo} from './deployments'
@@ -24,16 +23,6 @@ async function run(): Promise<void> {
     const event: 'build' | 'deployment' =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (core.getInput('event_type') as any) || 'build'
-
-    const branchName = github.context.ref.split('/')[2]
-    const issueKey =
-      core.getInput('issue') || branchName.match(/(\w+)-(\d+)/)?.[0]
-
-    if (!issueKey) {
-      throw new Error(
-        `Could not parse issue key from branch name, "${branchName}"`,
-      )
-    }
 
     switch (event) {
       case 'build':
