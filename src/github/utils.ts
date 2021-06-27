@@ -65,16 +65,16 @@ export async function getIssueKeys(): Promise<string[]> {
 
   const fromInput = core.getInput('issue')
 
-  const fromBranch = branchName?.match(/(\w+)-(\d+)/)?.[0]
+  const fromBranch = branchName?.match(/(\w+)-(\d+)/g) ?? []
 
-  const fromCommit = commitMessage?.match(/(\w+)-(\d+)/)?.[0]
+  const fromCommit = commitMessage?.match(/(\w+)-(\d+)/g) ?? []
 
-  const issueKeys = [fromInput, fromBranch, fromCommit].filter(
+  const issueKeys = [fromInput, ...fromBranch, ...fromCommit].filter(
     (value, index, array) => {
       // Deduplicate and remove nill values
       return value && array.indexOf(value) === index
     },
-  ) as string[]
+  )
 
   if (!issueKeys.length && process.env.JIRA_DEFAULT_TEST_ISSUE) {
     issueKeys.push(process.env.JIRA_DEFAULT_TEST_ISSUE)
