@@ -3,7 +3,7 @@ import * as github from '@actions/github'
 import {Jira} from '../jira/api'
 
 export async function sendBuildInfo(jira: Jira): Promise<void> {
-  const state: 'successful' | 'failed' =
+  const state: 'successful' | 'success' | 'failed' | 'cancelled' =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (core.getInput('state') as any) || 'successful'
 
@@ -33,7 +33,7 @@ export async function sendBuildInfo(jira: Jira): Promise<void> {
           displayName: github.context.workflow,
           description: `${github.context.workflow} triggered by ${github.context.eventName} for commit ${github.context.sha}`,
           url: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
-          state,
+          state: state === 'success' ? 'successful' : state,
           lastUpdated: new Date(now).toISOString(),
           issueKeys: [issueKey],
           // testInfo: {

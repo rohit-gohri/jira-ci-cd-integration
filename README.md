@@ -17,13 +17,33 @@ Generate OAuth Credentials : Client ID and Client Secret
 ### With Github Actions
 
 ```yaml
-- uses: rohit-gohri/jira-ci-cd-integration@v1
+- name: Jira Integration
+  if: ${{ always() }}
+  uses: rohit-gohri/jira-ci-cd-integration@v1
   with:
+    event_type: build
+    state: ${{ job.status }}
     jira_instance: companyname # Subdomain for Jira Cloud
     client_id: ${{ secrets.JIRA_CLIENT_ID }}
     client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
-    # Optional #
-    event_type: build # Optional ("build" or "deployment", default is "build")
-    state: successful # Optional ("successful" or "failed", default is "successful")
-    issue: JCI-2 # Optional (Will be parsed from branch name automatically if absent)
 ```
+
+#### Options
+
+##### jira_instance
+
+##### client_id
+
+##### client_secret
+
+##### event_type (optional)
+
+"build" or "deployment", default is "build"
+
+##### state (optional)
+
+"successful", "failed", or "canceled" default is "successful"
+
+##### issue (optional)
+
+Will be parsed from branch name automatically if absent. Or you can provide it according to your own logic.

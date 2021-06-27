@@ -41,9 +41,9 @@ jobs:
       - name: Test Action
         uses: ./
         with:
+          event_type: build
+          state: ${{ job.status }}
+          issue: JCI-2
           jira_instance: boringdownload
           client_id: ${{ secrets.JIRA_CLIENT_ID }}
           client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
-          event_type: build # Optional ("build" or "deployment", default is "build")
-          state: successful # Optional ("successful" or "failed", default is "successful")
-          issue: JCI-2 # Optional (will be parsed from branch name)
