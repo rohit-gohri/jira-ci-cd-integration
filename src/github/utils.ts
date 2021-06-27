@@ -63,13 +63,13 @@ export async function getIssueKeys(): Promise<string[]> {
   const branchName = getBranchName()
   const commitMessage = await getCommitMessage()
 
-  const fromInput = core.getInput('issue')
+  const fromInput = core.getInput('issue')?.match(/(\w+)-(\d+)/g) ?? []
 
   const fromBranch = branchName?.match(/(\w+)-(\d+)/g) ?? []
 
   const fromCommit = commitMessage?.match(/(\w+)-(\d+)/g) ?? []
 
-  const issueKeys = [fromInput, ...fromBranch, ...fromCommit].filter(
+  const issueKeys = [...fromInput, ...fromBranch, ...fromCommit].filter(
     (value, index, array) => {
       // Deduplicate and remove nill values
       return value && array.indexOf(value) === index
