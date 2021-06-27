@@ -85,8 +85,8 @@ jobs:
         working-directory: release
         if: ${{ env.create_release == 'yes' }}
         run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config user.name rohit-drone
+          git config user.email 53574087+rohit-drone@users.noreply.github.com
           git add -A .
           git commit -m "Release ${{ env.package_version }}"
           git push
