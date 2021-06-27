@@ -1,0 +1,92 @@
+name: 'generate'
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v2
+
+      - name: Check if tag already exists
+        run: |
+          # Get version from package.json (head is needed because this also returns "version" npm script line)
+          sed -n '/version/s/,*\r*$//p' package.json | cut -d ':' -f2,3 | sed -e 's/^ "//' -e 's/"$//' | head -n 1 > app_version.tmp
+          cat app_version.tmp | cut -d. -f1 > major_version.tmp
+
+          export VERSION_TAG="v$(cat app_version.tmp)"
+          echo "package_version=$(cat app_version.tmp)" >> $GITHUB_ENV
+          echo "major_version=$(cat major_version.tmp)" >> $GITHUB_ENV
+
+          # Check if tag already exists
+          if [ $(git tag -l "$VERSION_TAG") ]; then
+              echo "Tag already exists, please increment version to create release"
+              echo "create_release=no" >> $GITHUB_ENV
+          else
+              echo "create_release=yes" >> $GITHUB_ENV
+          fi
+
+      - name: Cache node modules
+        if: ${{ env.create_release == 'yes' }}
+        uses: actions/cache@v2
+        env:
+          cache-name: npm
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Use Node.js 12
+        if: ${{ env.create_release == 'yes' }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: 📦 Install dependencies
+        if: ${{ env.create_release == 'yes' }}
+        run: npm ci
+
+      - name: 🔨 Build Project
+        if: ${{ env.create_release == 'yes' }}
+        run: npm run package
+
+      - name: Checkout release branch
+        if: ${{ env.create_release == 'yes' }}
+        uses: actions/checkout@v2
+        with:
+          path: release
+          ref: releases/v${{ env.major_version }}
+
+      - name: Copy to release branch
+        if: ${{ env.create_release == 'yes' }}
+        run: |
+          cp -r dist release
+          cp -r .github release
+          cp -r docs release
+          cp README.md release/
+          cp package.json release/
+          cp package-lock.json release/
+          cp action.yml release/
+          cp LICENSE release/
+          cp .gitignore release/
+
+          # Add all gitignore except dist folder
+          head -n -4 .gitignore > release/.gitignore
+
+      - name: Commit and push to release branch
+        working-directory: release
+        if: ${{ env.create_release == 'yes' }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A .
+          git commit -m "Release ${{ env.package_version }}"
+          git push

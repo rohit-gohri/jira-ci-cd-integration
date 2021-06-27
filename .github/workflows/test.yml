@@ -1,0 +1,50 @@
+name: 'build-test'
+
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout commit
+        uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: npm
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔨 Build Project
+        run: npm run package
+
+      - name: Test Action
+        uses: ./
+        env:
+          JIRA_DEFAULT_TEST_ISSUE: 'JCI-7'
+        with:
+          event_type: build
+          state: ${{ job.status }}
+          jira_instance: boringdownload
+          token: ${{ secrets.GITHUB_TOKEN }}
+          client_id: ${{ secrets.JIRA_CLIENT_ID }}
+          client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
