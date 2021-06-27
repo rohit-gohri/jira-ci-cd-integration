@@ -1,11 +1,27 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Jira Github Integration'
+description: 'Send Github Actions Build Information to Jira'
+author: 'Rohit Gohri'
 inputs:
-  milliseconds: # change this
+  jira_instance:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'Sub Domain of Jira Cloud Instance'
+  client_id:
+    required: true
+    description: 'ClientID of OAuth Creds'
+  client_secret:
+    required: true
+    description: 'ClientSecret of OAuth Creds'
+  event_type:
+    required: false
+    description: '"build" or "deployment"'
+    default: build
+  state:
+    required: false
+    description: '"successful" or "failed"'
+    default: successful
+  issue:
+    required: false
+    description: Will be parsed from branch name automatically
 runs:
   using: 'node12'
   main: 'dist/index.js'

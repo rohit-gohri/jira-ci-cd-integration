@@ -1,40 +1,53 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
+  "name": "jira-ci-cd-integration",
+  "version": "0.0.1",
   "private": true,
   "description": "TypeScript template action",
   "main": "lib/main.js",
   "scripts": {
+    "prebuild": "npm run lint && npm run test",
     "build": "tsc",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
-    "package": "ncc build --source-map --license licenses.txt",
-    "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+    "prepackage": "npm run build",
+    "package": "npm run package:action",
+    "package:action": "ncc build lib/github/main.js --source-map --license licenses.txt",
+    "test": "jest"
+  },
+  "engines": {
+    "node": "12.16.x"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/rohit-gohri/jira-ci-cd-integration.git"
   },
   "keywords": [
     "actions",
     "node",
-    "setup"
+    "integration",
+    "jira"
   ],
-  "author": "",
+  "author": "Rohit Gohri <work@rohit.page>",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.6"
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^5.0.0",
+    "isomorphic-fetch": "^3.0.0",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.9",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
     "@vercel/ncc": "^0.25.1",
     "eslint": "^7.17.0",
+    "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-github": "^4.1.1",
     "eslint-plugin-jest": "^24.1.3",
+    "eslint-plugin-prettier": "^3.3.1",
     "jest": "^26.6.3",
     "jest-circus": "^26.6.3",
     "js-yaml": "^3.14.0",
