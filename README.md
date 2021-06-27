@@ -1,18 +1,14 @@
-<p align="center">
-  
-  [![Github Release](https://img.shields.io/github/v/release/rohit-gohri/jira-ci-cd-integration?style=flat-square)](https://github.com/rohit-gohri/jira-ci-cd-integration/releases)
-  
-  <a href="https://github.com/rohit-gohri/jira-ci-cd-integration/actions"><img alt="action status" src="https://github.com/rohit-gohri/jira-ci-cd-integration/workflows/build-test/badge.svg"></a>
+[![Github Release](https://img.shields.io/github/v/release/rohit-gohri/jira-ci-cd-integration?style=flat)](https://github.com/rohit-gohri/jira-ci-cd-integration/releases)
+<a href="https://github.com/rohit-gohri/jira-ci-cd-integration/actions"><img alt="action status" src="https://github.com/rohit-gohri/jira-ci-cd-integration/workflows/build-test/badge.svg"></a>
+<a href="https://github.com/rohit-gohri/jira-ci-cd-integration/actions"><img alt="action status" src="https://github.com/rohit-gohri/jira-ci-cd-integration/workflows/release/badge.svg"></a>
 
-</p>
+# Jira Development Integration
 
-# Jira CI/CD Integration
-
-Integrate your CI/CD pipeline information into the Jira Builds/Deployments Panel.
-
-> Only supports Jira Cloud. Does not support Jira Server (hosted)
+Integrate your CI/CD pipeline's Build and Deployment information into the Jira Development Panel.
 
 ![Builds Panel Preview](./docs/builds-panel.png)
+
+> Only supports Jira Cloud. Does not support Jira Server (hosted)
 
 ## Prerequisites
 
@@ -66,32 +62,32 @@ Generate new OAuth Credentials and copy
     client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
 ```
 
-#### Options
+## Options
 
-##### jira_instance
+### jira_instance (JIRA_INSTANCE)
 
 Sub Domain of Jira Cloud Instance
 
-##### client_id
+### client_id (JIRA_CLIENT_ID)
 
 ClientID of OAuth Creds
 
-##### client_secret
+### client_secret (JIRA_CLIENT_SECRET)
 
 Client Secret of OAuth Creds
 
-##### event_type (optional)
+### event_type (JIRA_EVENT_TYPE) (optional)
 
 "build" or "deployment", (default is "build")
 
-##### state (optional)
+### state (optional)
 
 "successful"/"success", "failed", or "canceled" (default is "successful")
 
-##### issue (optional)
+### issue (optional)
 
 Will be parsed from branch name automatically if absent. Or you can provide it according to your own logic. Can be multiple issues.
 
-##### token (optional)
+### token (optional)
 
 Github Token to get commit message in Pull Request Events. Since github context doesn't have commit message, we use the Github API to get it from sha.

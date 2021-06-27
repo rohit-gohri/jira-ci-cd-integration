@@ -4,9 +4,9 @@ import createJiraAPI from '../jira/api'
 import {setLogger} from '../utils/logger'
 import {sendBuildInfo} from './builds'
 import {sendDeploymnetInfo} from './deployments'
+import {getInputs} from './input'
 
 async function run(): Promise<void> {
-  // const now = Date.now()
   try {
     setLogger(core)
     if (
@@ -17,24 +17,10 @@ async function run(): Promise<void> {
       return
     }
 
-    const jiraInstance: string = core.getInput('jira_instance')
-    core.info(`Connecting to Jira Instance "${jiraInstance}"...`)
-    const clientId: string = core.getInput('client_id')
-    const clientSecret: string = core.getInput('client_secret')
-    core.info(`Connecting via "${clientId}"`)
+    const inputs = getInputs()
+    const jira = await createJiraAPI(inputs)
 
-    const jira = await createJiraAPI({
-      jiraInstance,
-      clientId,
-      clientSecret,
-    })
-    core.info(`Found cloudId: "${jira.cloudId}"`)
-
-    const event: 'build' | 'deployment' =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (core.getInput('event_type') as any) || 'build'
-
-    switch (event) {
+    switch (inputs.event) {
       case 'build':
         await sendBuildInfo(jira)
         break
@@ -42,7 +28,7 @@ async function run(): Promise<void> {
         await sendDeploymnetInfo(jira)
         break
       default:
-        throw new Error(`Invalid event_type, "${event}"`)
+        throw new Error(`Invalid event_type, "${inputs.event}"`)
     }
     core.setOutput('Done', new Date().toTimeString())
   } catch (error) {
