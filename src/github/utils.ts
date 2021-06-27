@@ -10,6 +10,9 @@ export function getBranchName(): string | undefined {
   } else if (github.context.ref.startsWith('refs/pull')) {
     branchName = process.env.GITHUB_HEAD_REF
   }
+
+  getLogger().debug(`BranchName: ${branchName}`)
+
   return branchName
 }
 
@@ -27,19 +30,34 @@ export function getState(): 'successful' | 'failed' | 'cancelled' {
  */
 export function getCommitMessage(): string | undefined {
   const latestCommit = (github.context.payload.commits as unknown[])?.pop()
-  return (latestCommit as {message: string})?.message
+  const commitMessage = (latestCommit as {message: string})?.message
+
+  getLogger().debug(`CommitMessage: ${commitMessage}`)
+
+  return commitMessage
 }
 
 export function getIssueKeys(): string[] {
   const branchName = getBranchName()
-  getLogger().debug(`BranchName: ${branchName}`)
+  const commitMessage = getCommitMessage()
 
-  const fromBranch =
-    core.getInput('issue') ||
-    branchName?.match(/(\w+)-(\d+)/)?.[0] ||
-    process.env.JIRA_DEFAULT_TEST_ISSUE
+  const fromInput = core.getInput('issue')
 
-  const issueKeys = [fromBranch].filter(Boolean) as string[]
+  const fromBranch = branchName?.match(/(\w+)-(\d+)/)?.[0]
+
+  const fromCommit = commitMessage?.match(/(\w+)-(\d+)/)?.[0]
+
+  const issueKeys = [fromInput, fromBranch, fromCommit].filter(
+    (value, index, array) => {
+      // Deduplicate and remove nill values
+      return value != null && array.indexOf(value) === index
+    },
+  ) as string[]
+
+  if (!issueKeys.length && process.env.JIRA_DEFAULT_TEST_ISSUE) {
+    issueKeys.push(process.env.JIRA_DEFAULT_TEST_ISSUE)
+  }
+
   if (!issueKeys.length) {
     throw new Error(
       `Could not parse any issue keys. Branch name, "${branchName}"`,
