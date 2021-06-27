@@ -64,6 +64,7 @@ jobs:
         with:
           path: release
           ref: releases/v${{ env.major_version }}
+          token: ${{ secrets.DRONE_USER_TOKEN }}
 
       - name: Copy to release branch
         if: ${{ env.create_release == 'yes' }}
