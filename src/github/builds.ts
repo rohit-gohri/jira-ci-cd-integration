@@ -10,7 +10,9 @@ export async function sendBuildInfo(jira: Jira): Promise<void> {
   const now = Date.now()
   const branchName = github.context.ref.split('/')[2]
   const issueKey =
-    core.getInput('issue') || branchName.match(/(\w+)-(\d+)/)?.[0]
+    core.getInput('issue') ||
+    branchName.match(/(\w+)-(\d+)/)?.[0] ||
+    process.env.JIRA_DEFAULT_TEST_ISSUE
 
   if (!issueKey) {
     throw new Error(

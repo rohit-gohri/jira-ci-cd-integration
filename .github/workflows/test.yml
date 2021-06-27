@@ -40,10 +40,11 @@ jobs:
 
       - name: Test Action
         uses: ./
+        env:
+          JIRA_DEFAULT_TEST_ISSUE: JCI-7
         with:
           event_type: build
           state: ${{ job.status }}
-          issue: JCI-2
           jira_instance: boringdownload
           client_id: ${{ secrets.JIRA_CLIENT_ID }}
           client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
