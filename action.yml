@@ -1,5 +1,8 @@
-name: 'Jira Github Integration'
+name: 'Jira Development Integration'
 description: 'Send Github Actions Build Information to Jira'
+branding:
+  icon: 'check'
+  color: 'blue'
 author: 'Rohit Gohri'
 inputs:
   jira_instance:
@@ -20,7 +23,7 @@ inputs:
     default: build
   state:
     required: false
-    description: '"successful" or "failed"'
+    description: '"successful"/"success", "failed", or "canceled"'
     default: successful
   issue:
     required: false

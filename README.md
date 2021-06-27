@@ -60,7 +60,7 @@ Generate new OAuth Credentials and copy
   with:
     event_type: deployment
     state: ${{ job.status }}
-    issue: JCI-3, JCI-6 # Comma separated list of issues being deployed/released
+    issue: JCI-3, JCI-6 # Comma separated list of issues being deployed/released. You are expected to generate this yourself in a previous step
     jira_instance: companyname # Subdomain for Jira Cloud
     client_id: ${{ secrets.JIRA_CLIENT_ID }}
     client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
@@ -70,18 +70,28 @@ Generate new OAuth Credentials and copy
 
 ##### jira_instance
 
+Sub Domain of Jira Cloud Instance
+
 ##### client_id
+
+ClientID of OAuth Creds
 
 ##### client_secret
 
+Client Secret of OAuth Creds
+
 ##### event_type (optional)
 
-"build" or "deployment", default is "build"
+"build" or "deployment", (default is "build")
 
 ##### state (optional)
 
-"successful"/"success", "failed", or "canceled" default is "successful"
+"successful"/"success", "failed", or "canceled" (default is "successful")
 
 ##### issue (optional)
 
-Will be parsed from branch name automatically if absent. Or you can provide it according to your own logic.
+Will be parsed from branch name automatically if absent. Or you can provide it according to your own logic. Can be multiple issues.
+
+##### token (optional)
+
+Github Token to get commit message in Pull Request Events. Since github context doesn't have commit message, we use the Github API to get it from sha.
