@@ -37,13 +37,30 @@ Generate new OAuth Credentials and copy
 
 ### Update Github Workflow
 
+#### Use in Builds Pipeline
+
 ```yaml
 - name: Jira Integration
   if: ${{ always() }}
-  uses: rohit-gohri/jira-ci-cd-integration@v1
+  uses: rohit-gohri/jira-ci-cd-integration@v0
   with:
     event_type: build
     state: ${{ job.status }}
+    jira_instance: companyname # Subdomain for Jira Cloud
+    client_id: ${{ secrets.JIRA_CLIENT_ID }}
+    client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
+```
+
+#### Use in Deployment Pipeline
+
+```yaml
+- name: Jira Integration
+  if: ${{ always() }}
+  uses: rohit-gohri/jira-ci-cd-integration@v0
+  with:
+    event_type: deployment
+    state: ${{ job.status }}
+    issue: JCI-3, JCI-6 # Comma separated list of issues being deployed/released
     jira_instance: companyname # Subdomain for Jira Cloud
     client_id: ${{ secrets.JIRA_CLIENT_ID }}
     client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
@@ -63,7 +80,7 @@ Generate new OAuth Credentials and copy
 
 ##### state (optional)
 
-"successful", "failed", or "canceled" default is "successful"
+"successful"/"success", "failed", or "canceled" default is "successful"
 
 ##### issue (optional)
 

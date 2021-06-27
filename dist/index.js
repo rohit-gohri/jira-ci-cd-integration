@@ -204,14 +204,14 @@ function getCommitMessage() {
 }
 exports.getCommitMessage = getCommitMessage;
 function getIssueKeys() {
-    var _a, _b;
+    var _a, _b, _c, _d;
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         const branchName = getBranchName();
         const commitMessage = yield getCommitMessage();
-        const fromInput = core.getInput('issue');
-        const fromBranch = (_a = branchName === null || branchName === void 0 ? void 0 : branchName.match(/(\w+)-(\d+)/g)) !== null && _a !== void 0 ? _a : [];
-        const fromCommit = (_b = commitMessage === null || commitMessage === void 0 ? void 0 : commitMessage.match(/(\w+)-(\d+)/g)) !== null && _b !== void 0 ? _b : [];
-        const issueKeys = [fromInput, ...fromBranch, ...fromCommit].filter((value, index, array) => {
+        const fromInput = (_b = (_a = core.getInput('issue')) === null || _a === void 0 ? void 0 : _a.match(/(\w+)-(\d+)/g)) !== null && _b !== void 0 ? _b : [];
+        const fromBranch = (_c = branchName === null || branchName === void 0 ? void 0 : branchName.match(/(\w+)-(\d+)/g)) !== null && _c !== void 0 ? _c : [];
+        const fromCommit = (_d = commitMessage === null || commitMessage === void 0 ? void 0 : commitMessage.match(/(\w+)-(\d+)/g)) !== null && _d !== void 0 ? _d : [];
+        const issueKeys = [...fromInput, ...fromBranch, ...fromCommit].filter((value, index, array) => {
             // Deduplicate and remove nill values
             return value && array.indexOf(value) === index;
         });
