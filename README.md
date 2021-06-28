@@ -1,4 +1,5 @@
 [![Github Release](https://img.shields.io/github/v/release/rohit-gohri/jira-ci-cd-integration?style=flat)](https://github.com/rohit-gohri/jira-ci-cd-integration/releases)
+[![Docker Release](https://img.shields.io/docker/v/boringdownload/jira-integration)](https://hub.docker.com/repository/docker/boringdownload/jira-integration)
 <a href="https://github.com/rohit-gohri/jira-ci-cd-integration/actions"><img alt="action status" src="https://github.com/rohit-gohri/jira-ci-cd-integration/workflows/build-test/badge.svg"></a>
 <a href="https://github.com/rohit-gohri/jira-ci-cd-integration/actions"><img alt="action status" src="https://github.com/rohit-gohri/jira-ci-cd-integration/workflows/release/badge.svg"></a>
 
@@ -66,24 +67,46 @@ Generate new OAuth Credentials and copy
 
 Supported in providers which support running arbitrary Docker images (like Drone, Gitlab CI).
 
+Docker Images are available from:
+
+- Docker Hub: `boringdownload/jira-integration`
+- Github Container Registry: `ghcr.io/rohit-gohri/jira-ci-cd-integration`
+- Gitlab Container Registry: `registry.gitlab.com/rohit-gohri/jira-ci-cd-integration`
+
+Pick whatever you want and is convenient for you.
+
 ### Set Env Vars
 
-Configuration for the Docker image is through env vars
+Configuration for the Docker image is through env vars. Read more in [options](#options).
 
 #### Drone.io
 
-<!-- TODO -->
+Add secrets for `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET` and then add this to your pipeline:
 
 ```yaml
-- name: jira-integration
-  image: rohit-gohri/jira-ci-cd-integration
-  environment:
-    GITHUB_TOKEN:
+steps:
+  - name: jira-integration
+    image: boringdownload/jira-integration:v0
+    environment:
+      BUILD_NAME: drone-pipeline
+      JIRA_INSTANCE: companyname
+      JIRA_CLIENT_ID:
+        from_secret: jira_client_id
+      JIRA_CLIENT_SECRET:
+        from_secret: jira_client_secret
 ```
 
 #### Gitlab CI/CD
 
-<!-- TODO -->
+[Add a CI/CD Variable to your project](https://docs.gitlab.com/ee/ci/variables/#add-a-cicd-variable-to-a-project) for `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET` and then add this step to your pipeline, preferably in the last stage.
+
+```yaml
+jira-integration:
+  image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
+  variables:
+    BUILD_NAME: gitlab-pipeline
+    JIRA_INSTANCE: companyname
+```
 
 ## Options
 
