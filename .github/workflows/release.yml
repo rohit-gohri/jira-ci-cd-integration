@@ -6,7 +6,7 @@ on:
       - 'releases/*'
 
 jobs:
-  docker:
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,7 +31,11 @@ jobs:
           else
               echo "create_release=yes" >> $GITHUB_ENV
           fi
-
+  docker:
+    needs:
+      - check
+    runs-on: ubuntu-latest
+    steps:
       - name: Docker meta
         if: ${{ env.create_release == 'yes' }}
         id: meta
@@ -90,31 +94,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   action:
+    needs:
+      - check
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Check if tag already exists
-        run: |
-          # Get version from package.json (head is needed because this also returns "version" npm script line)
-          sed -n '/version/s/,*\r*$//p' package.json | cut -d ':' -f2,3 | sed -e 's/^ "//' -e 's/"$//' | head -n 1 > app_version.tmp
-          cat app_version.tmp | cut -d. -f1 > major_version.tmp
-
-          export VERSION_TAG="v$(cat app_version.tmp)"
-          echo "package_version=$(cat app_version.tmp)" >> $GITHUB_ENV
-          echo "major_version=$(cat major_version.tmp)" >> $GITHUB_ENV
-
-          # Check if tag already exists
-          if [ $(git tag -l "$VERSION_TAG") ]; then
-              echo "Tag already exists, please increment version to create release"
-              echo "create_release=no" >> $GITHUB_ENV
-          else
-              echo "create_release=yes" >> $GITHUB_ENV
-          fi
-
       - name: 🚀 Release
         uses: softprops/action-gh-release@master
         if: ${{ env.create_release == 'yes' }}
