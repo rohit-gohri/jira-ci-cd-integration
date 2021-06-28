@@ -86,8 +86,8 @@ jobs:
           cp README.md release/
           cp LICENSE release/
 
-          # Add executable
-          cp jira-integration release/
+          # Add executables
+          cp -r bin release
           # Copy release dockerfile as main dockerfile
           cp Dockerfile.release release/Dockerfile
 
