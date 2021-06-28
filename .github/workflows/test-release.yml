@@ -14,7 +14,7 @@ jobs:
         env:
           JIRA_DEFAULT_TEST_ISSUE: 'JCI-7'
         with:
-          event_type: deployment
+          event_type: build
           state: ${{ job.status }}
           jira_instance: boringdownload
           token: ${{ secrets.GITHUB_TOKEN }}
