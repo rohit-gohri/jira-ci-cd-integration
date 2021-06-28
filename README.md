@@ -103,9 +103,10 @@ steps:
 ```yaml
 jira-integration:
   image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
+  script: jira-integration
   variables:
     BUILD_NAME: gitlab-pipeline
-    JIRA_INSTANCE: companyname
+    JIRA_INSTANCE: boringdownload
 ```
 
 ## Options
