@@ -45,8 +45,8 @@ jobs:
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
-            ype=semver,pattern={{version}},value=v${{ env.package_version }}
-            ype=semver,pattern=v{{major}},value=v${{ env.package_version }}
+            type=semver,pattern={{version}},value=v${{ env.package_version }}
+            type=semver,pattern=v{{major}},value=v${{ env.package_version }}
             type=sha
 
       - name: Set up QEMU
