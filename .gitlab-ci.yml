@@ -6,7 +6,7 @@ jira-integration:
   image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
   script: jira-integration
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /releases/'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
   variables:
     JIRA_ISSUES: JCI-7
     BUILD_NAME: gitlab-pipeline

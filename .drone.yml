@@ -16,3 +16,4 @@ steps:
     when:
       branch:
         - release/*
+        - JCI-14-JCI-5-others
