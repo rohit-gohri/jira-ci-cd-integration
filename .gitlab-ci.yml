@@ -1,0 +1,13 @@
+# http://docs.gitlab.com/ce/ci/yaml/README.html
+
+image: node:12
+
+jira-integration:
+  image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
+  script: jira-integration
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /releases/'
+  variables:
+    JIRA_ISSUES: JCI-7
+    BUILD_NAME: gitlab-pipeline
+    JIRA_INSTANCE: boringdownload
