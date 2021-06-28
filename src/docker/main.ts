@@ -30,8 +30,8 @@ async function run(): Promise<void> {
           issueKeys,
           buildUrl: env.buildUrl,
           repoUrl: env.slug,
-          buildNumber: Number(env.job),
-          pipelineId: env.build,
+          buildNumber: Number(env.build),
+          pipelineId: `${env.slug}-${env.service}`,
         })
         logger.info('Response', build)
         break
