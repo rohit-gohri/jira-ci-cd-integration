@@ -16,4 +16,4 @@ steps:
 
 trigger:
   branch:
-    - release/**
+    - releases/**
