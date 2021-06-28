@@ -1,5 +1,6 @@
 import {Jira} from './api'
 import {getLogger} from '../utils/logger'
+import {ValidState} from '../utils/types'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function sendBuildInfo(
@@ -18,9 +19,9 @@ export async function sendBuildInfo(
   }: {
     name: string
     commit: string
-    state: 'successful' | 'failed' | 'cancelled'
+    state: ValidState
     branchName: string | undefined
-    branchUrl: string | undefined
+    branchUrl?: string | undefined
     issueKeys: string[]
     buildUrl: string
     repoUrl: string

@@ -62,32 +62,71 @@ Generate new OAuth Credentials and copy
     client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
 ```
 
+## Use with Other CI/CD Providers
+
+Supported in providers which support running arbitrary Docker images (like Drone, Gitlab CI).
+
+### Set Env Vars
+
+Configuration for the Docker image is through env vars
+
+#### Drone.io
+
+<!-- TODO -->
+
+```yaml
+- name: jira-integration
+  image: rohit-gohri/jira-ci-cd-integration
+  environment:
+    GITHUB_TOKEN:
+```
+
+#### Gitlab CI/CD
+
+<!-- TODO -->
+
 ## Options
 
-### jira_instance (JIRA_INSTANCE)
+Provide these options directly in case of Github Actions or via the env variable in the brackets for Docker.
 
-Sub Domain of Jira Cloud Instance
+### Inputs
 
-### client_id (JIRA_CLIENT_ID)
+#### jira_instance (JIRA_INSTANCE)
+
+Sub Domain of Jira Cloud Instance. This part of the url: `https://<jira_instance>.atlassian.net`
+
+#### client_id (JIRA_CLIENT_ID)
 
 ClientID of OAuth Creds
 
-### client_secret (JIRA_CLIENT_SECRET)
+#### client_secret (JIRA_CLIENT_SECRET)
 
 Client Secret of OAuth Creds
 
-### event_type (JIRA_EVENT_TYPE) (optional)
+#### event_type (JIRA_EVENT_TYPE) (optional)
 
 "build" or "deployment", (default is "build")
 
-### state (optional)
+#### state (BUILD_STATE) (optional)
 
-"successful"/"success", "failed", or "canceled" (default is "successful")
+"successful"/"success", "failed", or "canceled" (default is "unknown")
 
-### issue (optional)
+#### issue (JIRA_ISSUES) (optional)
 
 Will be parsed from branch name automatically if absent. Or you can provide it according to your own logic. Can be multiple issues.
 
-### token (optional)
+#### token (optional)
+
+> Only for Github Action
 
 Github Token to get commit message in Pull Request Events. Since github context doesn't have commit message, we use the Github API to get it from sha.
+
+### Pipeline Info
+
+#### Commit Message (COMMIT_MESSAGE)
+
+If you have the jira id in the commit message then provide this.
+
+#### Pipeline Name (BUILD_NAME)
+
+A name for your pipeline

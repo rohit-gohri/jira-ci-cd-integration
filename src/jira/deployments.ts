@@ -1,5 +1,6 @@
 import {Jira} from './api'
 import {getLogger} from '../utils/logger'
+import {ValidState} from '../utils/types'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function sendDeploymnetInfo(
@@ -15,7 +16,7 @@ export async function sendDeploymnetInfo(
   }: {
     name: string
     commit: string
-    state: 'successful' | 'failed' | 'cancelled'
+    state: ValidState
     issueKeys: string[]
     buildUrl: string
     pipelineId: string

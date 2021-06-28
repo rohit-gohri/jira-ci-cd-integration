@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {PullRequestEvent, PushEvent} from '@octokit/webhooks-definitions/schema'
 import {getLogger} from '../utils/logger'
+import {ValidState} from '../utils/types'
 
 export function getBranchName(): string | undefined {
   let branchName: string | undefined
@@ -17,10 +18,10 @@ export function getBranchName(): string | undefined {
   return branchName
 }
 
-export function getState(): 'successful' | 'failed' | 'cancelled' {
-  const state: 'successful' | 'success' | 'failed' | 'cancelled' =
+export function getState(): ValidState {
+  const state: 'success' | ValidState =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (core.getInput('state') as any) || 'successful'
+    (core.getInput('state') as any) || 'unknown'
 
   return state === 'success' ? 'successful' : state
 }

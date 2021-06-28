@@ -11,3 +11,5 @@ export interface IntegrationInputs {
   clientSecret: string
   event: 'build' | 'deployment'
 }
+
+export type ValidState = 'successful' | 'failed' | 'cancelled' | 'unknown'
