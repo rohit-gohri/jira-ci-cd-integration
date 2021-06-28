@@ -30,4 +30,4 @@ inputs:
     description: Will be parsed from branch name automatically
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'dist/github/index.js'
