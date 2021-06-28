@@ -1,12 +1,14 @@
+/* eslint-disable no-case-declarations */
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import createJiraAPI from '../jira/api'
+import {sendBuildInfo} from '../jira/builds'
+import {sendDeploymnetInfo} from '../jira/deployments'
 import {setLogger} from '../utils/logger'
-import {sendBuildInfo} from './builds'
-import {sendDeploymnetInfo} from './deployments'
+import {getInputs} from './input'
+import {getBranchName, getIssueKeys, getState} from './utils'
 
 async function run(): Promise<void> {
-  // const now = Date.now()
   try {
     setLogger(core)
     if (
@@ -17,32 +19,47 @@ async function run(): Promise<void> {
       return
     }
 
-    const jiraInstance: string = core.getInput('jira_instance')
-    core.info(`Connecting to Jira Instance "${jiraInstance}"...`)
-    const clientId: string = core.getInput('client_id')
-    const clientSecret: string = core.getInput('client_secret')
-    core.info(`Connecting via "${clientId}"`)
+    const inputs = getInputs()
+    const jira = await createJiraAPI(inputs)
 
-    const jira = await createJiraAPI({
-      jiraInstance,
-      clientId,
-      clientSecret,
-    })
-    core.info(`Found cloudId: "${jira.cloudId}"`)
+    const state = getState()
+    const branchName = getBranchName()
+    const issueKeys = await getIssueKeys()
 
-    const event: 'build' | 'deployment' =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (core.getInput('event_type') as any) || 'build'
+    const branchUrl = branchName
+      ? `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/tree/${branchName}`
+      : undefined
 
-    switch (event) {
+    switch (inputs.event) {
       case 'build':
-        await sendBuildInfo(jira)
+        const build = await sendBuildInfo(jira, {
+          name: github.context.workflow,
+          state,
+          commit: github.context.sha,
+          branchName,
+          branchUrl,
+          issueKeys,
+          buildUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
+          repoUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}`,
+          buildNumber: github.context.runNumber,
+          pipelineId: github.context.runId.toString(),
+        })
+        core.setOutput('Response', build)
         break
       case 'deployment':
-        await sendDeploymnetInfo(jira)
+        const deployment = await sendDeploymnetInfo(jira, {
+          name: github.context.workflow,
+          state,
+          commit: github.context.sha,
+          issueKeys,
+          buildUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
+          buildNumber: github.context.runNumber,
+          pipelineId: github.context.runId.toString(),
+        })
+        core.setOutput('Response', deployment)
         break
       default:
-        throw new Error(`Invalid event_type, "${event}"`)
+        throw new Error(`Invalid event_type, "${inputs.event}"`)
     }
     core.setOutput('Done', new Date().toTimeString())
   } catch (error) {

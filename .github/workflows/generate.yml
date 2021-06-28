@@ -81,6 +81,9 @@ jobs:
           cp LICENSE release/
           cp .gitignore release/
 
+          # Copy release dockerfile as main dockerfile
+          cp Dockerfile.release release/Dockerfile
+
           # Add all gitignore except dist folder
           head -n -4 .gitignore > release/.gitignore
 

@@ -37,6 +37,8 @@ export default async function createApi(options: {
   const endpoint = 'https://api.atlassian.com'
   const cloudId = await getCloudId(options.jiraInstance)
 
+  logger.info(`Found cloudId: "${cloudId}"`)
+
   const securityHandlers: Record<string, Function> = {
     atlassianCloudOauth: async (headers: Record<string, string>) => {
       headers['Authorization'] = `Bearer ${await getJWT(

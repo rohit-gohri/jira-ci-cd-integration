@@ -5,15 +5,14 @@
   "description": "TypeScript template action",
   "main": "lib/main.js",
   "scripts": {
-    "prebuild": "npm run lint && npm run test",
-    "build": "tsc",
+    "build": "tsc --noEmit",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "npm run lint -- --fix ",
-    "prepackage": "npm run build",
-    "package": "npm run package:action",
-    "package:action": "ncc build lib/github/main.js --source-map --license licenses.txt",
+    "package": "npm run package:docker && npm run package:action",
+    "package:docker": "ncc build src/docker/main.ts --out dist/docker --source-map --license licenses.txt",
+    "package:action": "ncc build src/github/main.ts --out dist/github --source-map --license licenses.txt",
     "increment": "npm --no-git-tag-version version",
     "test": "jest"
   },
@@ -36,10 +35,12 @@
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",
     "@octokit/webhooks-definitions": "^3.67.3",
+    "@relative-ci/env-ci": "^5.3.1",
     "isomorphic-fetch": "^3.0.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@types/env-ci": "^3.1.0",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.12.5",
