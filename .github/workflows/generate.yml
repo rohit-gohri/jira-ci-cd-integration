@@ -56,9 +56,9 @@ jobs:
         if: ${{ env.create_release == 'yes' }}
         run: npm ci
 
-      - name: 🔨 Build Project
+      - name: 🔨 Build Action
         if: ${{ env.create_release == 'yes' }}
-        run: npm run package
+        run: npm run package:action
 
       - name: Checkout release branch
         if: ${{ env.create_release == 'yes' }}

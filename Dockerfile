@@ -14,8 +14,6 @@ RUN npm ci
 # Bundle app source
 COPY . .
 
-# Build typescript files with full dependencies
-RUN npm run build
 # Package only Docker version
 RUN npm run package:docker
 

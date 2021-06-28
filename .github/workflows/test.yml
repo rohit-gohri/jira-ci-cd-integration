@@ -34,8 +34,14 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      - name: 🔨 Build Project
-        run: npm run package
+      - name: Checks
+        run: |
+          npm run lint
+          npm run build
+          npm run test
+
+      - name: 🔨 Package Action
+        run: npm run package:action
 
       - name: Test Action
         uses: ./
