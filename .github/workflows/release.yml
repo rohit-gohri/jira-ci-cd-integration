@@ -6,11 +6,13 @@ on:
       - 'releases/*'
 
 jobs:
-  release:
+  docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Check if tag already exists
         run: |
@@ -30,7 +32,81 @@ jobs:
               echo "create_release=yes" >> $GITHUB_ENV
           fi
 
-      - name: Release
+      - name: Docker meta
+        if: ${{ env.create_release == 'yes' }}
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            boringdownload/jira-integration
+            ghcr.io/rohit-gohri/jira-ci-cd-integration
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern=${{ env.package_version }}
+            type=semver,pattern=${{ env.major_version }}
+            type=sha
+
+      - name: Set up QEMU
+        if: ${{ env.create_release == 'yes' }}
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        if: ${{ env.create_release == 'yes' }}
+        uses: docker/setup-buildx-action@v1
+
+      - name: 🛂 Log in to Docker Hub
+        if: ${{ env.create_release == 'yes' }}
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: 🛂 Log in to the Container registry
+        if: ${{ env.create_release == 'yes' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔨🚀 Build and push
+        if: ${{ env.create_release == 'yes' }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Check if tag already exists
+        run: |
+          # Get version from package.json (head is needed because this also returns "version" npm script line)
+          sed -n '/version/s/,*\r*$//p' package.json | cut -d ':' -f2,3 | sed -e 's/^ "//' -e 's/"$//' | head -n 1 > app_version.tmp
+          cat app_version.tmp | cut -d. -f1 > major_version.tmp
+
+          export VERSION_TAG="v$(cat app_version.tmp)"
+          echo "package_version=$(cat app_version.tmp)" >> $GITHUB_ENV
+          echo "major_version=$(cat major_version.tmp)" >> $GITHUB_ENV
+
+          # Check if tag already exists
+          if [ $(git tag -l "$VERSION_TAG") ]; then
+              echo "Tag already exists, please increment version to create release"
+              echo "create_release=no" >> $GITHUB_ENV
+          else
+              echo "create_release=yes" >> $GITHUB_ENV
+          fi
+
+      - name: 🚀 Release
         uses: softprops/action-gh-release@master
         if: ${{ env.create_release == 'yes' }}
         with:
@@ -39,7 +115,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Tag Major Version
+      - name: 🚀 Tag Major Version
         if: ${{ env.create_release == 'yes' }}
         run: |
           git config user.name github-actions[bot]

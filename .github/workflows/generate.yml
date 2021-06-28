@@ -56,9 +56,9 @@ jobs:
         if: ${{ env.create_release == 'yes' }}
         run: npm ci
 
-      - name: 🔨 Build Action
+      - name: 🔨 Build Project
         if: ${{ env.create_release == 'yes' }}
-        run: npm run package:action
+        run: npm run package
 
       - name: Checkout release branch
         if: ${{ env.create_release == 'yes' }}
@@ -80,6 +80,9 @@ jobs:
           cp action.yml release/
           cp LICENSE release/
           cp .gitignore release/
+
+          # Copy release dockerfile as main dockerfile
+          cp Dockerfile.release release/Dockerfile
 
           # Add all gitignore except dist folder
           head -n -4 .gitignore > release/.gitignore

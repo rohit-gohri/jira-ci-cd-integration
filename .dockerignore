@@ -99,6 +99,6 @@ __tests__/runner/*
 lib/**/*
 release/**/*
 
-# ******* If you add anything here add it above this line *********
-dist/**/*
-# Last 4 lines are removed automatically in release branch
+# Extra stuff over .gitignore
+Dockerfile*
+.action.yml
