@@ -13,7 +13,7 @@ steps:
         from_secret: jira_client_id
       JIRA_CLIENT_SECRET:
         from_secret: jira_client_secret
-    when:
-      branch:
-        - release/*
-        - JCI-14-JCI-5-others
+
+trigger:
+  branch:
+    - release/**
