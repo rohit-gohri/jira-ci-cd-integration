@@ -1,0 +1,19 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: jira-integration
+    image: boringdownload/jira-integration:v0
+    environment:
+      JIRA_ISSUES: JCI-7
+      BUILD_NAME: drone-pipeline
+      JIRA_INSTANCE: boringdownload
+      JIRA_CLIENT_ID:
+        from_secret: jira_client_id
+      JIRA_CLIENT_SECRET:
+        from_secret: jira_client_secret
+
+trigger:
+  branch:
+    - release/**

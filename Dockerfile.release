@@ -5,4 +5,4 @@ WORKDIR /usr/jira-ci-cd-integration
 # Bundle app source
 COPY . .
 
-CMD ["node", "dist/docker/index.js"]
+CMD ["node", "/usr/jira-ci-cd-integration/dist/docker/index.js"]

@@ -81,6 +81,8 @@ jobs:
           cp LICENSE release/
           cp .gitignore release/
 
+          # Add executable
+          cp jira-integration release/
           # Copy release dockerfile as main dockerfile
           cp Dockerfile.release release/Dockerfile
 
