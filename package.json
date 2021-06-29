@@ -1,6 +1,6 @@
 {
   "name": "jira-ci-cd-integration",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "private": true,
   "description": "TypeScript template action",
   "main": "lib/main.js",
