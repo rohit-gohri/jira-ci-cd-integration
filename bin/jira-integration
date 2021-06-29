@@ -1,5 +1,5 @@
-#!/bin/bash
-
+#!/bin/sh
+# NOTE: Only for dockerfile
 set -e
 
-node ../dist/docker/index.js
+node /usr/local/jira-ci-cd-integration/dist/docker/index.js
