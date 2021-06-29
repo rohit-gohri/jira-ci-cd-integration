@@ -104,15 +104,24 @@ steps:
 
 [![pipeline status](https://gitlab.com/rohit-gohri/jira-ci-cd-integration/badges/v0/pipeline.svg)](https://gitlab.com/rohit-gohri/jira-ci-cd-integration/-/commits/v0)
 
-[Add a CI/CD Variable to your project](https://docs.gitlab.com/ee/ci/variables/#add-a-cicd-variable-to-a-project) for `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET` and then add this step to your pipeline, preferably in the last stage.
+[Add a CI/CD Variable to your project](https://docs.gitlab.com/ee/ci/variables/#add-a-cicd-variable-to-a-project) for `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET` (remember to mask them) and then add these steps to your pipeline (we use `.post` stage so it runs last)
 
 ```yaml
-jira-integration:
+jira-integration-on-success:
+  stage: .post
+  when: on_success
   image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
   script: jira-integration
   variables:
+    BUILD_STATE: successful
     BUILD_NAME: gitlab-pipeline
-    JIRA_INSTANCE: boringdownload
+    JIRA_INSTANCE: companyname
+
+jira-integration-on-failure:
+  extends: jira-integration-success
+  when: on_failure
+  variables:
+    BUILD_STATE: failure
 ```
 
 ## Options
