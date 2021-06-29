@@ -23,7 +23,7 @@ Generate new OAuth Credentials and copy
 
 ## Usage With Github Actions
 
-[![test-release-workflow](https://github.com/rohit-gohri/jira-ci-cd-integration/actions/workflows/test-release.yml/badge.svg?event=push)](https://github.com/rohit-gohri/jira-ci-cd-integration/actions/workflows/test-release.yml)
+[![test-release workflow](https://github.com/rohit-gohri/jira-ci-cd-integration/actions/workflows/test-release.yml/badge.svg)](https://github.com/rohit-gohri/jira-ci-cd-integration/actions/workflows/test-release.yml)
 
 ### Add OAuth Creds as secrets to Github
 
