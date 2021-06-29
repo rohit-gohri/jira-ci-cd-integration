@@ -52,7 +52,8 @@ async function run(): Promise<void> {
     }
     logger.info('Done', new Date().toTimeString())
   } catch (error) {
-    console.error(error, 'Failed')
+    console.error(error, 'Failed to send event')
+    process.exit(1)
   }
 }
 
