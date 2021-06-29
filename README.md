@@ -23,6 +23,8 @@ Generate new OAuth Credentials and copy
 
 ## Usage With Github Actions
 
+[![test-release-workflow](https://github.com/rohit-gohri/jira-ci-cd-integration/actions/workflows/test-release.yml/badge.svg?event=push)](https://github.com/rohit-gohri/jira-ci-cd-integration/actions/workflows/test-release.yml)
+
 ### Add OAuth Creds as secrets to Github
 
 **See:** <https://docs.github.com/en/actions/reference/encrypted-secrets>
@@ -81,6 +83,8 @@ Configuration for the Docker image is through env vars. Read more in [options](#
 
 #### Drone.io
 
+[![Build Status](https://cloud.drone.io/api/badges/rohit-gohri/jira-ci-cd-integration/status.svg?ref=refs/tags/v0)](https://cloud.drone.io/rohit-gohri/jira-ci-cd-integration)
+
 Add secrets for `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET` and then add this to your pipeline:
 
 ```yaml
@@ -98,15 +102,26 @@ steps:
 
 #### Gitlab CI/CD
 
-[Add a CI/CD Variable to your project](https://docs.gitlab.com/ee/ci/variables/#add-a-cicd-variable-to-a-project) for `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET` and then add this step to your pipeline, preferably in the last stage.
+[![pipeline status](https://gitlab.com/rohit-gohri/jira-ci-cd-integration/badges/v0/pipeline.svg)](https://gitlab.com/rohit-gohri/jira-ci-cd-integration/-/commits/v0)
+
+[Add a CI/CD Variable to your project](https://docs.gitlab.com/ee/ci/variables/#add-a-cicd-variable-to-a-project) for `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET` (remember to mask them) and then add these steps to your pipeline (we use `.post` stage so it runs last)
 
 ```yaml
-jira-integration:
+jira-integration-on-success:
+  stage: .post
+  when: on_success
   image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
   script: jira-integration
   variables:
+    BUILD_STATE: successful
     BUILD_NAME: gitlab-pipeline
-    JIRA_INSTANCE: boringdownload
+    JIRA_INSTANCE: companyname
+
+jira-integration-on-failure:
+  extends: jira-integration-success
+  when: on_failure
+  variables:
+    BUILD_STATE: failure
 ```
 
 ## Options
