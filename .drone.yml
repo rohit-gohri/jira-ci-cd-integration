@@ -15,5 +15,5 @@ steps:
         from_secret: jira_client_secret
 
 trigger:
-  branch:
-    - releases/**
+  event:
+    - tag
