@@ -118,7 +118,7 @@ jira-integration-on-success:
     JIRA_INSTANCE: companyname
 
 jira-integration-on-failure:
-  extends: jira-integration-success
+  extends: jira-integration-on-success
   when: on_failure
   variables:
     BUILD_STATE: failure
