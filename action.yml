@@ -21,7 +21,6 @@ inputs:
   event_type:
     required: false
     description: '"build" or "deployment"'
-    default: build
   environment:
     required: false
     description: 'Environment name'
