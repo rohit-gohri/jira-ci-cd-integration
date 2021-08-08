@@ -1,6 +1,7 @@
 import envCi, {GitLabEnv} from '@relative-ci/env-ci'
 import {getLogger} from '../utils/logger'
 import {ValidState} from '../utils/types'
+import {processEnvironment} from '../utils/validator'
 
 // Using this type as this has the most supported fields
 const env = envCi() as GitLabEnv
@@ -64,4 +65,31 @@ export async function getIssueKeys(): Promise<string[]> {
   getLogger().debug(`IssueKeys: "${issueKeys}"`)
 
   return issueKeys
+}
+
+export function getEnvironment(): {
+  displayName: string
+  type: 'unmapped' | 'development' | 'testing' | 'staging' | 'production'
+} {
+  const label =
+    process.env.CI_ENVIRONMENT_NAME ||
+    process.env.DRONE_DEPLOY_TO ||
+    process.env.BUILD_ENVIRONMENT ||
+    'Unknown'
+
+  const type:
+    | 'unmapped'
+    | 'development'
+    | 'testing'
+    | 'staging'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | 'production' = process.env.BUILD_ENVIRONMENT_TYPE as any
+
+  const slug = (
+    process.env.CI_ENVIRONMENT_TIER ||
+    process.env.CI_ENVIRONMENT_SLUG ||
+    label
+  ).toLowerCase()
+
+  return processEnvironment(label, slug, type)
 }

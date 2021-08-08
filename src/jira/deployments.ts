@@ -1,9 +1,10 @@
 import {Jira} from './api'
 import {getLogger} from '../utils/logger'
-import {ValidState} from '../utils/types'
+import {ReturnTypeResolved, ValidState} from '../utils/types'
+import type {processEnvironment} from '../utils/validator'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export async function sendDeploymnetInfo(
+export async function sendDeploymentInfo(
   jira: Jira,
   {
     name,
@@ -13,6 +14,7 @@ export async function sendDeploymnetInfo(
     buildUrl,
     pipelineId,
     buildNumber,
+    environment,
   }: {
     name: string
     commit: string
@@ -21,6 +23,7 @@ export async function sendDeploymnetInfo(
     buildUrl: string
     pipelineId: string
     buildNumber: number
+    environment: ReturnTypeResolved<typeof processEnvironment>
   },
 ) {
   const now = Date.now()
@@ -44,11 +47,9 @@ export async function sendDeploymnetInfo(
             displayName: name,
           },
           deploymentSequenceNumber: buildNumber,
-          // TODO: Add env
           environment: {
-            displayName: '',
-            id: '',
-            type: 'unmapped',
+            ...environment,
+            id: `${environment.displayName.toLowerCase()}-${pipelineId}`,
           },
           updateSequenceNumber: now,
           displayName: name,

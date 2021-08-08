@@ -22,13 +22,19 @@ inputs:
     required: false
     description: '"build" or "deployment"'
     default: build
+  environment:
+    required: false
+    description: 'Environment name'
+  environment_type:
+    required: false
+    description: 'We try to automatically parse from environment but if you want to override then provide one of [unmapped, development, testing, staging, production]'
   state:
     required: false
     description: '"successful"/"success", "failed", or "canceled"'
     default: successful
   issue:
     required: false
-    description: Will be parsed from branch name automatically
+    description: Will be parsed from branch name automatically if not provided.
 runs:
   using: 'node12'
   main: 'dist/github/index.js'

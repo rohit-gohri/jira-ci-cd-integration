@@ -17,3 +17,44 @@ export function validateInputs(inputs: IntegrationInputs): void {
     )
   }
 }
+
+const validEnvTypes = ['development', 'testing', 'staging', 'production']
+
+export function processEnvironment(
+  label: string,
+  slug: string,
+  type: string,
+): {
+  displayName: string
+  type: 'unmapped' | 'development' | 'testing' | 'staging' | 'production'
+} {
+  if (!type) {
+    if (slug.includes('prod') || slug.includes('production')) {
+      type = 'production' as const
+    } else if (
+      slug.includes('stage') ||
+      slug.includes('staging') ||
+      slug.includes('stg')
+    ) {
+      type = 'staging' as const
+    } else if (slug.includes('test') || slug.includes('testing')) {
+      type = 'testing' as const
+    } else if (
+      slug.includes('dev') ||
+      slug.includes('develop') ||
+      slug.includes('development')
+    ) {
+      type = 'development' as const
+    }
+  }
+
+  return {
+    displayName: label,
+    type: (validEnvTypes.includes(type) ? type : 'unmapped') as
+      | 'unmapped'
+      | 'development'
+      | 'testing'
+      | 'staging'
+      | 'production',
+  }
+}

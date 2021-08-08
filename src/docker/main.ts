@@ -2,10 +2,10 @@
 import envCi, {GitLabEnv} from '@relative-ci/env-ci'
 import createJiraAPI from '../jira/api'
 import {sendBuildInfo} from '../jira/builds'
-import {sendDeploymnetInfo} from '../jira/deployments'
+import {sendDeploymentInfo} from '../jira/deployments'
 import {getLogger, setLogger} from '../utils/logger'
 import {getInputs} from './input'
-import {getBranchName, getIssueKeys, getState} from './utils'
+import {getBranchName, getEnvironment, getIssueKeys, getState} from './utils'
 
 async function run(): Promise<void> {
   try {
@@ -20,30 +20,29 @@ async function run(): Promise<void> {
     const branchName = getBranchName()
     const issueKeys = await getIssueKeys()
 
+    const common = {
+      name: process.env.BUILD_NAME || env.name,
+      state,
+      commit: env.commit,
+      issueKeys,
+      buildUrl: env.buildUrl,
+      buildNumber: Number(env.build || env.job),
+      pipelineId: `${env.service}-${env.slug}`,
+    }
+
     switch (inputs.event) {
       case 'build':
         const build = await sendBuildInfo(jira, {
-          name: process.env.BUILD_NAME || env.name,
-          state,
-          commit: env.commit,
+          ...common,
           branchName,
-          issueKeys,
-          buildUrl: env.buildUrl,
           repoUrl: env.slug,
-          buildNumber: Number(env.build),
-          pipelineId: `${env.slug}-${env.service}`,
         })
         logger.info('Response', build)
         break
       case 'deployment':
-        const deployment = await sendDeploymnetInfo(jira, {
-          name: process.env.BUILD_NAME || env.name,
-          state,
-          commit: env.commit,
-          issueKeys,
-          buildUrl: env.buildUrl,
-          buildNumber: Number(env.job),
-          pipelineId: env.build,
+        const deployment = await sendDeploymentInfo(jira, {
+          ...common,
+          environment: getEnvironment(),
         })
         logger.info('Response', deployment)
         break

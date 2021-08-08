@@ -3,10 +3,10 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import createJiraAPI from '../jira/api'
 import {sendBuildInfo} from '../jira/builds'
-import {sendDeploymnetInfo} from '../jira/deployments'
+import {sendDeploymentInfo} from '../jira/deployments'
 import {setLogger} from '../utils/logger'
 import {getInputs} from './input'
-import {getBranchName, getIssueKeys, getState} from './utils'
+import {getBranchName, getEnvironment, getIssueKeys, getState} from './utils'
 
 async function run(): Promise<void> {
   try {
@@ -30,31 +30,30 @@ async function run(): Promise<void> {
       ? `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/tree/${branchName}`
       : undefined
 
+    const common = {
+      name: github.context.workflow,
+      state,
+      commit: github.context.sha,
+      issueKeys,
+      buildUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
+      buildNumber: github.context.runNumber,
+      pipelineId: github.context.runId.toString(),
+    }
+
     switch (inputs.event) {
       case 'build':
         const build = await sendBuildInfo(jira, {
-          name: github.context.workflow,
-          state,
-          commit: github.context.sha,
+          ...common,
           branchName,
           branchUrl,
-          issueKeys,
-          buildUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
           repoUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}`,
-          buildNumber: github.context.runNumber,
-          pipelineId: github.context.runId.toString(),
         })
         core.setOutput('Response', build)
         break
       case 'deployment':
-        const deployment = await sendDeploymnetInfo(jira, {
-          name: github.context.workflow,
-          state,
-          commit: github.context.sha,
-          issueKeys,
-          buildUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
-          buildNumber: github.context.runNumber,
-          pipelineId: github.context.runId.toString(),
+        const deployment = await sendDeploymentInfo(jira, {
+          ...common,
+          environment: getEnvironment(),
         })
         core.setOutput('Response', deployment)
         break

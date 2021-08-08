@@ -3,6 +3,7 @@ import * as github from '@actions/github'
 import {PullRequestEvent, PushEvent} from '@octokit/webhooks-definitions/schema'
 import {getLogger} from '../utils/logger'
 import {ValidState} from '../utils/types'
+import {processEnvironment} from '../utils/validator'
 
 export function getBranchName(): string | undefined {
   let branchName: string | undefined
@@ -84,4 +85,16 @@ export async function getIssueKeys(): Promise<string[]> {
   getLogger().debug(`IssueKeys: "${issueKeys}"`)
 
   return issueKeys
+}
+
+export function getEnvironment(): {
+  displayName: string
+  type: 'unmapped' | 'development' | 'testing' | 'staging' | 'production'
+} {
+  const label = core.getInput('environment') || 'Unknown'
+  const type = core.getInput('environment_type')
+
+  const slug = label.toLowerCase()
+
+  return processEnvironment(label, slug, type)
 }
