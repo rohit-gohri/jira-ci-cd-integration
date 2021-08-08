@@ -65,7 +65,7 @@ Generate new OAuth Credentials and copy
     client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
 ```
 
-## Use with Other CI/CD Providers
+## Use with Any Other CI/CD Providers
 
 Supported in providers which support running arbitrary Docker images (like Drone, Gitlab CI).
 
@@ -77,11 +77,9 @@ Docker Images are available from:
 
 Pick whatever you want and is convenient for you.
 
-### Set Env Vars
-
 Configuration for the Docker image is through env vars. Read more in [options](#options).
 
-#### Drone.io
+### Drone.io
 
 [![Build Status](https://cloud.drone.io/api/badges/rohit-gohri/jira-ci-cd-integration/status.svg?ref=refs/tags/v0)](https://cloud.drone.io/rohit-gohri/jira-ci-cd-integration)
 
@@ -100,25 +98,51 @@ steps:
         from_secret: jira_client_secret
 ```
 
-#### Gitlab CI/CD
+To send deployment information just promote the build and it will send a deployment info.
+
+### Gitlab CI/CD
 
 [![pipeline status](https://gitlab.com/rohit-gohri/jira-ci-cd-integration/badges/v0/pipeline.svg)](https://gitlab.com/rohit-gohri/jira-ci-cd-integration/-/commits/v0)
 
 [Add a CI/CD Variable to your project](https://docs.gitlab.com/ee/ci/variables/#add-a-cicd-variable-to-a-project) for `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET` (remember to mask them) and then add these steps to your pipeline (we use `.post` stage so it runs last)
 
+#### Add to .post stage to send Build Info
+
 ```yaml
-jira-integration-on-success:
+jira-build-integration-on-success:
+  stage: .post
+  when: on_success
+  image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
+  script: jira-integration
+  variables:
+    BUILD_NAME: gitlab-pipeline-name
+    JIRA_INSTANCE: companyname
+
+jira-build-integration-on-failure:
+  extends: jira-build-integration-on-success
+  when: on_failure
+  variables:
+    BUILD_STATE: failure
+```
+
+#### Use with Gitlab Environments to send Release Info
+
+```yaml
+jira-deploy-integration-on-success:
   stage: .post
   when: on_success
   image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
   script: jira-integration
   variables:
     BUILD_STATE: successful
-    BUILD_NAME: gitlab-pipeline
+    BUILD_NAME: gitlab-pipeline-name
     JIRA_INSTANCE: companyname
+    JIRA_EVENT_TYPE: deployment
+  environment:
+    name: production
 
-jira-integration-on-failure:
-  extends: jira-integration-on-success
+jira-deploy-integration-on-failure:
+  extends: jira-deploy-integration-on-success
   when: on_failure
   variables:
     BUILD_STATE: failure
@@ -169,3 +193,15 @@ If you have the jira id in the commit message then provide this.
 #### Pipeline Name (BUILD_NAME)
 
 A name for your pipeline
+
+#### Environment Name (BUILD_ENVIROMENT) (optional)
+
+> NOTE: Only for Deployment events
+
+A name for your environment. We try to automatically infer this from your CI/CD provider.
+
+#### Environment Type (BUILD_ENVIROMENT_TYPE) (optional)
+
+> NOTE: Automatically inferred from environment name
+
+We try to automatically parse this from environment but if you want to override then provide one of (`unmapped`, `development`, `testing`, `staging`, `production`)
