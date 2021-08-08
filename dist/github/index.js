@@ -7205,7 +7205,7 @@ function sendBuildInfo(jira, { name, commit, state, branchName, branchUrl, issue
 
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function sendDeploymnetInfo(jira, { name, commit, state, issueKeys, buildUrl, pipelineId, buildNumber, }) {
+function sendDeploymentInfo(jira, { name, commit, state, issueKeys, buildUrl, pipelineId, buildNumber, environment, }) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         const now = Date.now();
@@ -7225,12 +7225,7 @@ function sendDeploymnetInfo(jira, { name, commit, state, issueKeys, buildUrl, pi
                         displayName: name,
                     },
                     deploymentSequenceNumber: buildNumber,
-                    // TODO: Add env
-                    environment: {
-                        displayName: '',
-                        id: '',
-                        type: 'unmapped',
-                    },
+                    environment: Object.assign(Object.assign({}, environment), { id: `${environment.displayName.toLowerCase()}-${pipelineId}` }),
                     updateSequenceNumber: now,
                     displayName: name,
                     description: `${name} triggered for commit ${commit}`,
@@ -7262,6 +7257,28 @@ function validateInputs(inputs) {
         throw new Error(`Invalid input: JIRA_EVENT_TYPE. Expected one of "${validEvents}", received "${inputs.event}".`);
     }
 }
+const validEnvTypes = ['development', 'testing', 'staging', 'production'];
+function processEnvironmentTpe(slug, type) {
+    if (!type) {
+        if (slug.includes('prod') || slug.includes('production')) {
+            type = 'production';
+        }
+        else if (slug.includes('stage') ||
+            slug.includes('staging') ||
+            slug.includes('stg')) {
+            type = 'staging';
+        }
+        else if (slug.includes('test') || slug.includes('testing')) {
+            type = 'testing';
+        }
+        else if (slug.includes('dev') ||
+            slug.includes('develop') ||
+            slug.includes('development')) {
+            type = 'development';
+        }
+    }
+    return (validEnvTypes.includes(type) ? type : 'unmapped');
+}
 
 ;// CONCATENATED MODULE: ./src/github/input.ts
 
@@ -7286,6 +7303,15 @@ function getInputs() {
     validateInputs(inputs);
     return inputs;
 }
+function getEnvironment() {
+    const label = core.getInput('environment') || 'Unknown';
+    const type = core.getInput('environment_type');
+    const slug = label.toLowerCase();
+    return {
+        displayName: label,
+        type: processEnvironmentTpe(slug, type),
+    };
+}
 
 ;// CONCATENATED MODULE: ./src/github/utils.ts
 
@@ -7306,7 +7332,7 @@ function getBranchName() {
 function getState() {
     const state = 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    core.getInput('state') || 'unknown';
+    core.getInput('state') || 'successful';
     return state === 'success' ? 'successful' : state;
 }
 /**
@@ -7389,32 +7415,23 @@ function run() {
             const branchUrl = branchName
                 ? `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/tree/${branchName}`
                 : undefined;
+            const common = {
+                name: github.context.workflow,
+                state,
+                commit: github.context.sha,
+                issueKeys,
+                buildUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
+                buildNumber: github.context.runNumber,
+                pipelineId: github.context.runId.toString(),
+            };
             switch (inputs.event) {
                 case 'build':
-                    const build = yield sendBuildInfo(jira, {
-                        name: github.context.workflow,
-                        state,
-                        commit: github.context.sha,
-                        branchName,
-                        branchUrl,
-                        issueKeys,
-                        buildUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
-                        repoUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}`,
-                        buildNumber: github.context.runNumber,
-                        pipelineId: github.context.runId.toString(),
-                    });
+                    const build = yield sendBuildInfo(jira, Object.assign(Object.assign({}, common), { branchName,
+                        branchUrl, repoUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}` }));
                     core.setOutput('Response', build);
                     break;
                 case 'deployment':
-                    const deployment = yield sendDeploymnetInfo(jira, {
-                        name: github.context.workflow,
-                        state,
-                        commit: github.context.sha,
-                        issueKeys,
-                        buildUrl: `${github.context.serverUrl}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`,
-                        buildNumber: github.context.runNumber,
-                        pipelineId: github.context.runId.toString(),
-                    });
+                    const deployment = yield sendDeploymentInfo(jira, Object.assign(Object.assign({}, common), { environment: getEnvironment() }));
                     core.setOutput('Response', deployment);
                     break;
                 default:

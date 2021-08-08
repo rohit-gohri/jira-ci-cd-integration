@@ -6643,7 +6643,7 @@ function sendBuildInfo(jira, { name, commit, state, branchName, branchUrl, issue
 
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function sendDeploymnetInfo(jira, { name, commit, state, issueKeys, buildUrl, pipelineId, buildNumber, }) {
+function sendDeploymentInfo(jira, { name, commit, state, issueKeys, buildUrl, pipelineId, buildNumber, environment, }) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         const now = Date.now();
@@ -6663,12 +6663,7 @@ function sendDeploymnetInfo(jira, { name, commit, state, issueKeys, buildUrl, pi
                         displayName: name,
                     },
                     deploymentSequenceNumber: buildNumber,
-                    // TODO: Add env
-                    environment: {
-                        displayName: '',
-                        id: '',
-                        type: 'unmapped',
-                    },
+                    environment: Object.assign(Object.assign({}, environment), { id: `${environment.displayName.toLowerCase()}-${pipelineId}` }),
                     updateSequenceNumber: now,
                     displayName: name,
                     description: `${name} triggered for commit ${commit}`,
@@ -6700,10 +6695,47 @@ function validateInputs(inputs) {
         throw new Error(`Invalid input: JIRA_EVENT_TYPE. Expected one of "${validEvents}", received "${inputs.event}".`);
     }
 }
+const validEnvTypes = ['development', 'testing', 'staging', 'production'];
+function processEnvironmentTpe(slug, type) {
+    if (!type) {
+        if (slug.includes('prod') || slug.includes('production')) {
+            type = 'production';
+        }
+        else if (slug.includes('stage') ||
+            slug.includes('staging') ||
+            slug.includes('stg')) {
+            type = 'staging';
+        }
+        else if (slug.includes('test') || slug.includes('testing')) {
+            type = 'testing';
+        }
+        else if (slug.includes('dev') ||
+            slug.includes('develop') ||
+            slug.includes('development')) {
+            type = 'development';
+        }
+    }
+    return (validEnvTypes.includes(type) ? type : 'unmapped');
+}
 
 ;// CONCATENATED MODULE: ./src/docker/input.ts
 
 
+const defaultEnv = 'Unknown';
+function getEnvironment() {
+    const label = process.env.CI_ENVIRONMENT_NAME ||
+        process.env.DRONE_DEPLOY_TO ||
+        process.env.BUILD_ENVIRONMENT ||
+        defaultEnv;
+    const type = process.env.BUILD_ENVIRONMENT_TYPE;
+    const slug = (process.env.CI_ENVIRONMENT_TIER ||
+        process.env.CI_ENVIRONMENT_SLUG ||
+        label).toLowerCase();
+    return {
+        displayName: label,
+        type: processEnvironmentTpe(slug, type),
+    };
+}
 function getInputs() {
     const logger = getLogger();
     const jiraInstance = process.env.JIRA_INSTANCE;
@@ -6711,9 +6743,17 @@ function getInputs() {
     const clientId = process.env.JIRA_CLIENT_ID;
     const clientSecret = process.env.JIRA_CLIENT_SECRET;
     logger.info(`Connecting via Oauth`);
-    const event = 
+    let event = 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    process.env.JIRA_EVENT_TYPE || 'build';
+    process.env.JIRA_EVENT_TYPE;
+    const environment = getEnvironment();
+    // If we have env then it probably is a deployment rather than a build
+    if (environment.displayName !== defaultEnv) {
+        event = event || 'deployment';
+    }
+    else {
+        event = event || 'build';
+    }
     const inputs = {
         jiraInstance,
         clientId,
@@ -6740,7 +6780,7 @@ function getState() {
     const state = process.env.BUILD_STATE ||
         process.env.CI_JOB_STATUS ||
         process.env.DRONE_BUILD_STATUS ||
-        'unknown';
+        'successful';
     return state === 'success' ? 'successful' : state;
 }
 /**
@@ -6799,31 +6839,22 @@ function run() {
             const state = getState();
             const branchName = getBranchName();
             const issueKeys = yield getIssueKeys();
+            const common = {
+                name: process.env.BUILD_NAME || env.name,
+                state,
+                commit: env.commit,
+                issueKeys,
+                buildUrl: env.buildUrl,
+                buildNumber: Number(env.build || env.job),
+                pipelineId: `${env.service}-${env.slug}`,
+            };
             switch (inputs.event) {
                 case 'build':
-                    const build = yield sendBuildInfo(jira, {
-                        name: process.env.BUILD_NAME || env.name,
-                        state,
-                        commit: env.commit,
-                        branchName,
-                        issueKeys,
-                        buildUrl: env.buildUrl,
-                        repoUrl: env.slug,
-                        buildNumber: Number(env.build),
-                        pipelineId: `${env.slug}-${env.service}`,
-                    });
+                    const build = yield sendBuildInfo(jira, Object.assign(Object.assign({}, common), { branchName, repoUrl: env.slug }));
                     logger.info('Response', build);
                     break;
                 case 'deployment':
-                    const deployment = yield sendDeploymnetInfo(jira, {
-                        name: process.env.BUILD_NAME || env.name,
-                        state,
-                        commit: env.commit,
-                        issueKeys,
-                        buildUrl: env.buildUrl,
-                        buildNumber: Number(env.job),
-                        pipelineId: env.build,
-                    });
+                    const deployment = yield sendDeploymentInfo(jira, Object.assign(Object.assign({}, common), { environment: getEnvironment() }));
                     logger.info('Response', deployment);
                     break;
                 default:

@@ -43,7 +43,6 @@ Generate new OAuth Credentials and copy
   if: ${{ always() }}
   uses: rohit-gohri/jira-ci-cd-integration@v0
   with:
-    event_type: build
     state: ${{ job.status }}
     jira_instance: companyname # Subdomain for Jira Cloud
     client_id: ${{ secrets.JIRA_CLIENT_ID }}
@@ -52,20 +51,22 @@ Generate new OAuth Credentials and copy
 
 #### Use in Deployment Pipeline
 
+Just provide an evironment to send a deployment event instead of a build event.
+
 ```yaml
 - name: Jira Integration
   if: ${{ always() }}
   uses: rohit-gohri/jira-ci-cd-integration@v0
   with:
-    event_type: deployment
     state: ${{ job.status }}
+    environment: staging
     issue: JCI-3, JCI-6 # Comma separated list of issues being deployed/released. You are expected to generate this yourself in a previous step
     jira_instance: companyname # Subdomain for Jira Cloud
     client_id: ${{ secrets.JIRA_CLIENT_ID }}
     client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
 ```
 
-## Use with Other CI/CD Providers
+## Use with Any Other CI/CD Providers
 
 Supported in providers which support running arbitrary Docker images (like Drone, Gitlab CI).
 
@@ -77,11 +78,9 @@ Docker Images are available from:
 
 Pick whatever you want and is convenient for you.
 
-### Set Env Vars
-
 Configuration for the Docker image is through env vars. Read more in [options](#options).
 
-#### Drone.io
+### Drone.io
 
 [![Build Status](https://cloud.drone.io/api/badges/rohit-gohri/jira-ci-cd-integration/status.svg?ref=refs/tags/v0)](https://cloud.drone.io/rohit-gohri/jira-ci-cd-integration)
 
@@ -100,28 +99,47 @@ steps:
         from_secret: jira_client_secret
 ```
 
-#### Gitlab CI/CD
+To send deployment information just promote the build and it will send a deployment info.
+
+### Gitlab CI/CD
 
 [![pipeline status](https://gitlab.com/rohit-gohri/jira-ci-cd-integration/badges/v0/pipeline.svg)](https://gitlab.com/rohit-gohri/jira-ci-cd-integration/-/commits/v0)
 
 [Add a CI/CD Variable to your project](https://docs.gitlab.com/ee/ci/variables/#add-a-cicd-variable-to-a-project) for `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET` (remember to mask them) and then add these steps to your pipeline (we use `.post` stage so it runs last)
 
+#### Add to .post stage to send Build Info
+
 ```yaml
-jira-integration-on-success:
+jira-build-integration-on-success:
   stage: .post
   when: on_success
   image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
   script: jira-integration
   variables:
-    BUILD_STATE: successful
-    BUILD_NAME: gitlab-pipeline
+    BUILD_NAME: gitlab-pipeline-name
     JIRA_INSTANCE: companyname
 
-jira-integration-on-failure:
-  extends: jira-integration-on-success
+jira-build-integration-on-failure:
+  extends: jira-build-integration-on-success
   when: on_failure
   variables:
     BUILD_STATE: failure
+```
+
+#### Use with Gitlab Environments to send Release Info
+
+If you provide an environment block it will send a deployment event instead of build event.
+
+```yaml
+jira-deploy-integration-on-success:
+  extends: jira-build-integration-on-success
+  environment:
+    name: production
+
+jira-deploy-integration-on-failure:
+  extends: jira-build-integration-on-failure
+  environment:
+    name: production
 ```
 
 ## Options
@@ -144,11 +162,11 @@ Client Secret of OAuth Creds
 
 #### event_type (JIRA_EVENT_TYPE) (optional)
 
-"build" or "deployment", (default is "build")
+"build" or "deployment", (default is "build"). You can override this manually or just provide an `evironment` to send a deployment event instead of a build event.
 
 #### state (BUILD_STATE) (optional)
 
-"successful"/"success", "failed", or "canceled" (default is "unknown")
+"successful"/"success", "failed", or "canceled" (default is "successful")
 
 #### issue (JIRA_ISSUES) (optional)
 
@@ -169,3 +187,15 @@ If you have the jira id in the commit message then provide this.
 #### Pipeline Name (BUILD_NAME)
 
 A name for your pipeline
+
+#### Environment Name (BUILD_ENVIROMENT) (optional)
+
+> NOTE: Only for Deployment events
+
+A name for your environment. We try to automatically infer this from your CI/CD provider.
+
+#### Environment Type (BUILD_ENVIROMENT_TYPE) (optional)
+
+> NOTE: Automatically inferred from environment name
+
+We try to automatically parse this from environment but if you want to override then provide one of (`unmapped`, `development`, `testing`, `staging`, `production`)
