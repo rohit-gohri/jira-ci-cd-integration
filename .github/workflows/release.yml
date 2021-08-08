@@ -32,7 +32,7 @@ jobs:
               echo "create_release=yes" >> $GITHUB_ENV
           fi
 
-      - name: Docker meta
+      - name: Docker meta Release
         if: ${{ env.create_release == 'yes' }}
         id: meta
         uses: docker/metadata-action@v3
@@ -49,26 +49,37 @@ jobs:
             type=semver,pattern=v{{major}},value=v${{ env.package_version }}
             type=sha
 
+      - name: Docker meta Next
+        if: ${{ env.create_release == 'no' }}
+        id: meta-latest
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            boringdownload/jira-integration
+            ghcr.io/rohit-gohri/jira-ci-cd-integration
+            registry.gitlab.com/rohit-gohri/jira-ci-cd-integration
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=raw,value=next
+            type=sha
+
       - name: Set up QEMU
-        if: ${{ env.create_release == 'yes' }}
         uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
         id: buildx
-        if: ${{ env.create_release == 'yes' }}
         uses: docker/setup-buildx-action@v1
         with:
           driver-opts: network=host
 
       - name: 🛂 Log in to Docker Hub
-        if: ${{ env.create_release == 'yes' }}
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: 🛂 Log in to the Github Container registry
-        if: ${{ env.create_release == 'yes' }}
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -76,14 +87,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🛂 Log in to the Gitlab Container registry
-        if: ${{ env.create_release == 'yes' }}
         uses: docker/login-action@v1
         with:
           registry: registry.gitlab.com
           username: ${{ secrets.GITLAB_USERNAME }}
           password: ${{ secrets.GITLAB_TOKEN }}
 
-      - name: 🔨🚀 Build and push
+      - name: 🔨🚀 Build and push Release
         if: ${{ env.create_release == 'yes' }}
         uses: docker/build-push-action@v2
         with:
@@ -93,6 +103,17 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: 🔨🚀 Build and push latest
+        if: ${{ env.create_release == 'no' }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: ${{ steps.meta-latest.outputs.tags }}
+          labels: ${{ steps.meta-latest.outputs.labels }}
 
   action:
     runs-on: ubuntu-latest
