@@ -39,6 +39,8 @@ See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-
 
 ## Change the Code
 
+### Github Action Version
+
 Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
 
 ```javascript
@@ -59,20 +61,13 @@ run()
 
 See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
 
+### Docker Version
+
+We use a different build to also publish the action as a standalone docker image.
+
 ## Publish to a distribution branch
 
-Actions are run from GitHub repos so we will checkin the packed dist folder.
-
-Then run [ncc](https://github.com/zeit/ncc) and push the results:
-
-```bash
-$ npm run package
-$ git add dist
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
-
-Note: We recommend using the `--license` option for ncc, which will create a license file for all of the production node modules used in your project.
+Just run `npm run increment -- <patch|minor|major>` and push the changes to `main` branch. This will automatically generate a build file push to distribution branch (`releases/vx`). That will in turn trigger a workflow to build Dockerfile and publish it.
 
 Your action is now published! :rocket:
 
@@ -89,7 +84,3 @@ with:
 ```
 
 See the [actions tab](https://github.com/rohit-gohri/jira-ci-cd-integration/actions) for runs of this action! :rocket:
-
-## Usage:
-
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
