@@ -7284,6 +7284,7 @@ function processEnvironmentTpe(slug, type) {
 
 
 
+const defaultEnv = 'Unknown';
 function getInputs() {
     const logger = getLogger();
     const jiraInstance = core.getInput('jira_instance');
@@ -7291,9 +7292,17 @@ function getInputs() {
     const clientId = core.getInput('client_id');
     const clientSecret = core.getInput('client_secret');
     logger.info(`Connecting via "${clientId}"`);
-    const event = 
+    let event = 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    core.getInput('event_type') || 'build';
+    core.getInput('event_type');
+    const environment = getEnvironment();
+    // If we have env then it probably is a deployment rather than a build
+    if (environment.displayName !== defaultEnv) {
+        event = event || 'deployment';
+    }
+    else {
+        event = event || 'build';
+    }
     const inputs = {
         jiraInstance,
         clientId,
@@ -7304,7 +7313,7 @@ function getInputs() {
     return inputs;
 }
 function getEnvironment() {
-    const label = core.getInput('environment') || 'Unknown';
+    const label = core.getInput('environment') || defaultEnv;
     const type = core.getInput('environment_type');
     const slug = label.toLowerCase();
     return {
