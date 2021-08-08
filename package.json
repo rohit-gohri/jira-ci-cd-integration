@@ -1,6 +1,6 @@
 {
   "name": "jira-ci-cd-integration",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "private": true,
   "description": "TypeScript template action",
   "main": "lib/main.js",
@@ -46,7 +46,7 @@
     "@types/node": "^16.4.10",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
-    "@vercel/ncc": "^0.28.6",
+    "@vercel/ncc": "^0.29.0",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-github": "^4.1.3",
