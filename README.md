@@ -116,6 +116,7 @@ jira-build-integration-on-success:
   image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
   script: jira-integration
   variables:
+    BUILD_STATE: successful
     BUILD_NAME: gitlab-pipeline-name
     JIRA_INSTANCE: companyname
 
