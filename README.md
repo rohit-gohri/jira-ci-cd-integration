@@ -43,7 +43,6 @@ Generate new OAuth Credentials and copy
   if: ${{ always() }}
   uses: rohit-gohri/jira-ci-cd-integration@v0
   with:
-    event_type: build
     state: ${{ job.status }}
     jira_instance: companyname # Subdomain for Jira Cloud
     client_id: ${{ secrets.JIRA_CLIENT_ID }}
@@ -52,13 +51,15 @@ Generate new OAuth Credentials and copy
 
 #### Use in Deployment Pipeline
 
+Just provide an evironment to send a deployment event instead of a build event.
+
 ```yaml
 - name: Jira Integration
   if: ${{ always() }}
   uses: rohit-gohri/jira-ci-cd-integration@v0
   with:
-    event_type: deployment
     state: ${{ job.status }}
+    environment: staging
     issue: JCI-3, JCI-6 # Comma separated list of issues being deployed/released. You are expected to generate this yourself in a previous step
     jira_instance: companyname # Subdomain for Jira Cloud
     client_id: ${{ secrets.JIRA_CLIENT_ID }}
@@ -127,25 +128,18 @@ jira-build-integration-on-failure:
 
 #### Use with Gitlab Environments to send Release Info
 
+If you provide an environment block it will instead send a deployment event instead of build event.
+
 ```yaml
 jira-deploy-integration-on-success:
-  stage: .post
-  when: on_success
-  image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
-  script: jira-integration
-  variables:
-    BUILD_STATE: successful
-    BUILD_NAME: gitlab-pipeline-name
-    JIRA_INSTANCE: companyname
-    JIRA_EVENT_TYPE: deployment
+  extends: jira-build-integration-on-success
   environment:
     name: production
 
 jira-deploy-integration-on-failure:
-  extends: jira-deploy-integration-on-success
-  when: on_failure
-  variables:
-    BUILD_STATE: failure
+  extends: jira-build-integration-on-failure
+  environment:
+    name: production
 ```
 
 ## Options
