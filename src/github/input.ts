@@ -3,6 +3,8 @@ import {getLogger} from '../utils/logger'
 import {IntegrationInputs} from '../utils/types'
 import {validateInputs, processEnvironmentTpe} from '../utils/validator'
 
+const defaultEnv = 'Unknown'
+
 export function getInputs(): IntegrationInputs {
   const logger = getLogger()
 
@@ -13,9 +15,18 @@ export function getInputs(): IntegrationInputs {
   const clientSecret: string = core.getInput('client_secret')
   logger.info(`Connecting via "${clientId}"`)
 
-  const event: 'build' | 'deployment' =
+  let event: 'build' | 'deployment' =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (core.getInput('event_type') as any) || 'build'
+    core.getInput('event_type') as any
+
+  const environment = getEnvironment()
+
+  // If we have env then it probably is a deployment rather than a build
+  if (environment.displayName !== defaultEnv) {
+    event = event || 'deployment'
+  } else {
+    event = event || 'build'
+  }
 
   const inputs = {
     jiraInstance,
@@ -32,7 +43,7 @@ export function getEnvironment(): {
   displayName: string
   type: 'unmapped' | 'development' | 'testing' | 'staging' | 'production'
 } {
-  const label = core.getInput('environment') || 'Unknown'
+  const label = core.getInput('environment') || defaultEnv
   const type = core.getInput('environment_type')
 
   const slug = label.toLowerCase()
