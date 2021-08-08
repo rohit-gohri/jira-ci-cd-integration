@@ -10,7 +10,7 @@ empty:
   script:
     - echo "test"
 
-jira-integration-on-success:
+jira-build-integration-on-success:
   stage: .post
   when: on_success
   image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
@@ -21,8 +21,22 @@ jira-integration-on-success:
     BUILD_NAME: gitlab-pipeline
     JIRA_INSTANCE: boringdownload
 
-jira-integration-on-failure:
-  extends: jira-integration-on-success
+jira-build-integration-on-failure:
+  extends: jira-build-integration-on-success
   when: on_failure
   variables:
     BUILD_STATE: failure
+
+jira-deploy-integration-on-success:
+  extends: jira-build-integration-on-success
+  variables:
+    JIRA_ISSUES: JCI-4
+  environment:
+    name: production
+
+jira-deploy-integration-on-failure:
+  extends: jira-build-integration-on-failure
+  variables:
+    JIRA_ISSUES: JCI-4
+  environment:
+    name: production
