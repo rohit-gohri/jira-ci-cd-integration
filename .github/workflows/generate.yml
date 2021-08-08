@@ -34,7 +34,6 @@ jobs:
         run: npm ci
 
       - name: 🔨 Build Project
-        if: ${{ env.create_release == 'yes' }}
         run: npm run package
 
       - name: Checkout release branch
