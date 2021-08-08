@@ -16,6 +16,7 @@ inputs:
     description: 'ClientSecret of OAuth Creds'
   token:
     required: false
+    default: ${{ github.token }}
     description: 'Github Token to get commit message in Pull Request Events'
   event_type:
     required: false
