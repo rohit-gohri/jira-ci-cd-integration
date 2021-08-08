@@ -17,6 +17,7 @@ jira-build-integration-on-success:
   script: jira-integration
   variables:
     JIRA_ISSUES: JCI-7
+    BUILD_STATE: successful
     BUILD_NAME: gitlab-pipeline
     JIRA_INSTANCE: boringdownload
 
