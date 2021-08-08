@@ -21,7 +21,7 @@ export function getBranchName(): string | undefined {
 export function getState(): ValidState {
   const state: 'success' | ValidState =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (core.getInput('state') as any) || 'unknown'
+    (core.getInput('state') as any) || 'successful'
 
   return state === 'success' ? 'successful' : state
 }

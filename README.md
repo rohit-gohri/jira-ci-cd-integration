@@ -128,7 +128,7 @@ jira-build-integration-on-failure:
 
 #### Use with Gitlab Environments to send Release Info
 
-If you provide an environment block it will instead send a deployment event instead of build event.
+If you provide an environment block it will send a deployment event instead of build event.
 
 ```yaml
 jira-deploy-integration-on-success:
@@ -162,11 +162,11 @@ Client Secret of OAuth Creds
 
 #### event_type (JIRA_EVENT_TYPE) (optional)
 
-"build" or "deployment", (default is "build")
+"build" or "deployment", (default is "build"). You can override this manually or just provide an `evironment` to send a deployment event instead of a build event.
 
 #### state (BUILD_STATE) (optional)
 
-"successful"/"success", "failed", or "canceled" (default is "unknown")
+"successful"/"success", "failed", or "canceled" (default is "successful")
 
 #### issue (JIRA_ISSUES) (optional)
 

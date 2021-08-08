@@ -16,7 +16,6 @@ jira-build-integration-on-success:
   image: registry.gitlab.com/rohit-gohri/jira-ci-cd-integration:v0
   script: jira-integration
   variables:
-    BUILD_STATE: successful
     JIRA_ISSUES: JCI-7
     BUILD_NAME: gitlab-pipeline
     JIRA_INSTANCE: boringdownload
