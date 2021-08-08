@@ -43,13 +43,28 @@ jobs:
       - name: 🔨 Package Action
         run: npm run package:action
 
-      - name: Test Action
+      - name: Test Action - Build
         uses: ./
+        if: ${{ always() }}
         env:
           JIRA_DEFAULT_TEST_ISSUE: 'JCI-7'
         with:
           event_type: build
           state: ${{ job.status }}
+          jira_instance: boringdownload
+          token: ${{ secrets.GITHUB_TOKEN }}
+          client_id: ${{ secrets.JIRA_CLIENT_ID }}
+          client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
+
+      - name: Test Action - Deploys
+        uses: ./
+        if: ${{ always() }}
+        env:
+          JIRA_DEFAULT_TEST_ISSUE: 'JCI-7'
+        with:
+          event_type: deployment
+          state: ${{ job.status }}
+          environment: development
           jira_instance: boringdownload
           token: ${{ secrets.GITHUB_TOKEN }}
           client_id: ${{ secrets.JIRA_CLIENT_ID }}
