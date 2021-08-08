@@ -60,7 +60,7 @@ jobs:
         uses: ./
         if: ${{ always() }}
         env:
-          JIRA_DEFAULT_TEST_ISSUE: 'JCI-7'
+          JIRA_DEFAULT_TEST_ISSUE: 'JCI-4'
         with:
           event_type: deployment
           state: ${{ job.status }}
