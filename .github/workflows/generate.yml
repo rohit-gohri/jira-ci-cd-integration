@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout main
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Calculate major version
         run: |
@@ -22,6 +24,13 @@ jobs:
           echo "package_version=$(cat app_version.tmp)" >> $GITHUB_ENV
           echo "major_version=$(cat major_version.tmp)" >> $GITHUB_ENV
 
+          # Check if tag already exists
+          if [ $(git tag -l "$VERSION_TAG") ]; then
+              echo "Tag already exists, please increment version to create release"
+              echo "create_release=no" >> $GITHUB_ENV
+          else
+              echo "create_release=yes" >> $GITHUB_ENV
+          fi
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -80,9 +89,20 @@ jobs:
 
       - name: Commit and push to release branch
         working-directory: release
+        if: ${{ env.create_release == 'yes' }}
         run: |
           git config user.name rohit-drone
           git config user.email 53574087+rohit-drone@users.noreply.github.com
           git add -A .
           git commit -m "Release ${{ env.package_version }}, generated from commit ${{ github.sha }}"
+          git push
+
+      - name: Commit and push to release branch - Alpha
+        working-directory: release
+        if: ${{ env.create_release == 'no' }}
+        run: |
+          git config user.name rohit-drone
+          git config user.email 53574087+rohit-drone@users.noreply.github.com
+          git add -A .
+          git commit -m "Alpha version, generated from commit ${{ github.sha }}"
           git push
