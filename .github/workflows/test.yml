@@ -49,7 +49,6 @@ jobs:
         env:
           JIRA_DEFAULT_TEST_ISSUE: 'JCI-7'
         with:
-          event_type: build
           state: ${{ job.status }}
           jira_instance: boringdownload
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -62,7 +61,6 @@ jobs:
         env:
           JIRA_DEFAULT_TEST_ISSUE: 'JCI-4'
         with:
-          event_type: deployment
           state: ${{ job.status }}
           environment: development
           jira_instance: boringdownload

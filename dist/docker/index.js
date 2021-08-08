@@ -6747,6 +6747,7 @@ function getInputs() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     process.env.JIRA_EVENT_TYPE;
     const environment = getEnvironment();
+    logger.info(`Environment is "${environment.displayName}" (${environment.type})...`);
     // If we have env then it probably is a deployment rather than a build
     if (environment.displayName !== defaultEnv) {
         event = event || 'deployment';
