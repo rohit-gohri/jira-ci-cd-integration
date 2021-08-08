@@ -20,14 +20,10 @@ export function validateInputs(inputs: IntegrationInputs): void {
 
 const validEnvTypes = ['development', 'testing', 'staging', 'production']
 
-export function processEnvironment(
-  label: string,
+export function processEnvironmentTpe(
   slug: string,
   type: string,
-): {
-  displayName: string
-  type: 'unmapped' | 'development' | 'testing' | 'staging' | 'production'
-} {
+): 'unmapped' | 'development' | 'testing' | 'staging' | 'production' {
   if (!type) {
     if (slug.includes('prod') || slug.includes('production')) {
       type = 'production' as const
@@ -48,13 +44,10 @@ export function processEnvironment(
     }
   }
 
-  return {
-    displayName: label,
-    type: (validEnvTypes.includes(type) ? type : 'unmapped') as
-      | 'unmapped'
-      | 'development'
-      | 'testing'
-      | 'staging'
-      | 'production',
-  }
+  return (validEnvTypes.includes(type) ? type : 'unmapped') as
+    | 'unmapped'
+    | 'development'
+    | 'testing'
+    | 'staging'
+    | 'production'
 }

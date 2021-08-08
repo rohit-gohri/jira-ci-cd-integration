@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import {getLogger} from '../utils/logger'
 import {IntegrationInputs} from '../utils/types'
-import {validateInputs} from '../utils/validator'
+import {validateInputs, processEnvironmentTpe} from '../utils/validator'
 
 export function getInputs(): IntegrationInputs {
   const logger = getLogger()
@@ -26,4 +26,19 @@ export function getInputs(): IntegrationInputs {
 
   validateInputs(inputs)
   return inputs
+}
+
+export function getEnvironment(): {
+  displayName: string
+  type: 'unmapped' | 'development' | 'testing' | 'staging' | 'production'
+} {
+  const label = core.getInput('environment') || 'Unknown'
+  const type = core.getInput('environment_type')
+
+  const slug = label.toLowerCase()
+
+  return {
+    displayName: label,
+    type: processEnvironmentTpe(slug, type),
+  }
 }

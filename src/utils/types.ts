@@ -10,7 +10,6 @@ export interface IntegrationInputs {
   clientId: string
   clientSecret: string
   event: 'build' | 'deployment'
-  environment: string
 }
 
 export type ValidState = 'successful' | 'failed' | 'cancelled' | 'unknown'

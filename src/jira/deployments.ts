@@ -1,7 +1,7 @@
 import {Jira} from './api'
 import {getLogger} from '../utils/logger'
 import {ReturnTypeResolved, ValidState} from '../utils/types'
-import type {processEnvironment} from '../utils/validator'
+import type {processEnvironmentTpe} from '../utils/validator'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function sendDeploymentInfo(
@@ -23,7 +23,10 @@ export async function sendDeploymentInfo(
     buildUrl: string
     pipelineId: string
     buildNumber: number
-    environment: ReturnTypeResolved<typeof processEnvironment>
+    environment: {
+      displayName: string
+      type: ReturnTypeResolved<typeof processEnvironmentTpe>
+    }
   },
 ) {
   const now = Date.now()
