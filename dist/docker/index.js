@@ -6782,7 +6782,13 @@ function getState() {
         process.env.CI_JOB_STATUS ||
         process.env.DRONE_BUILD_STATUS ||
         'successful';
-    return state === 'success' ? 'successful' : state;
+    if (state === 'success') {
+        return 'successful';
+    }
+    if (state === 'failure') {
+        return 'failed';
+    }
+    return state;
 }
 /**
  * @see https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#push
