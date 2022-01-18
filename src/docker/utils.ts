@@ -20,11 +20,11 @@ export function getState(): ValidState {
     process.env.CI_JOB_STATUS ||
     process.env.DRONE_BUILD_STATUS ||
     'successful'
-  
+
   if (state === 'success') {
     return 'successful'
   }
-  
+
   if (state === 'failure') {
     return 'failed'
   }
