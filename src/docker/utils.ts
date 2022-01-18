@@ -15,13 +15,21 @@ export function getBranchName(): string | undefined {
 
 export function getState(): ValidState {
   // @ts-expect-error cast type
-  const state: 'success' | ValidState =
+  const state: 'success' | 'failure' | ValidState =
     process.env.BUILD_STATE ||
     process.env.CI_JOB_STATUS ||
     process.env.DRONE_BUILD_STATUS ||
     'successful'
+  
+  if (state === 'success') {
+    return 'successful'
+  }
+  
+  if (state === 'failure') {
+    return 'failed'
+  }
 
-  return state === 'success' ? 'successful' : state
+  return state
 }
 
 /**
