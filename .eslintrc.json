@@ -8,6 +8,8 @@
     "project": "./tsconfig.json"
   },
   "rules": {
+    "i18n-text/no-en": "off",
+    "sort-imports": "off",
     "no-console": "warn",
     "eslint-comments/no-use": "off",
     "import/no-namespace": "off",

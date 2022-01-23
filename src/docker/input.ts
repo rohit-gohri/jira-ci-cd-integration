@@ -1,6 +1,6 @@
 import {getLogger} from '../utils/logger'
 import {IntegrationInputs} from '../utils/types'
-import {validateInputs, processEnvironmentTpe} from '../utils/validator'
+import {processEnvironmentTpe, validateInputs} from '../utils/validator'
 
 const defaultEnv = 'Unknown'
 

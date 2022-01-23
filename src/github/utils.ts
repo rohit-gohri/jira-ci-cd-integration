@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {PullRequestEvent, PushEvent} from '@octokit/webhooks-definitions/schema'
+import type {PullRequestEvent, PushEvent} from '@octokit/webhooks-types'
 import {getLogger} from '../utils/logger'
 import {ValidState} from '../utils/types'
 

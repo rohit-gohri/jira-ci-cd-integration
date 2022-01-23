@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import {getLogger} from '../utils/logger'
+import {processEnvironmentTpe, validateInputs} from '../utils/validator'
 import {IntegrationInputs} from '../utils/types'
-import {validateInputs, processEnvironmentTpe} from '../utils/validator'
 
 const defaultEnv = 'Unknown'
 

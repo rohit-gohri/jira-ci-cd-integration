@@ -5,7 +5,7 @@ import createJiraAPI from '../jira/api'
 import {sendBuildInfo} from '../jira/builds'
 import {sendDeploymentInfo} from '../jira/deployments'
 import {setLogger} from '../utils/logger'
-import {getInputs, getEnvironment} from './input'
+import {getEnvironment, getInputs} from './input'
 import {getBranchName, getIssueKeys, getState} from './utils'
 
 async function run(): Promise<void> {
