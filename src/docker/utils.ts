@@ -1,4 +1,4 @@
-import envCi, {GitLabEnv} from '@relative-ci/env-ci'
+import envCi, {GitLabEnv} from 'env-ci'
 import {getLogger} from '../utils/logger'
 import {ValidState} from '../utils/types'
 
@@ -39,8 +39,12 @@ export function getState(): ValidState {
 export async function getCommitMessage(): Promise<string | undefined> {
   const commitMessage =
     process.env.COMMIT_MESSAGE ||
+    // gitlab
     process.env.CI_COMMIT_MESSAGE ||
+    // drone
     process.env.DRONE_COMMIT_MESSAGE ||
+    // azure
+    process.env.BUILD_SOURCEVERSIONMESSAGE ||
     undefined
 
   getLogger().debug(`CommitMessage: ${commitMessage}`)

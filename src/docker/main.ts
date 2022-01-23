@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import envCi, {GitLabEnv} from '@relative-ci/env-ci'
+import envCi, {GitLabEnv} from 'env-ci'
 import createJiraAPI from '../jira/api'
 import {sendBuildInfo} from '../jira/builds'
 import {sendDeploymentInfo} from '../jira/deployments'
@@ -21,7 +21,17 @@ async function run(): Promise<void> {
     const issueKeys = await getIssueKeys()
 
     const common = {
-      name: process.env.BUILD_NAME || env.name,
+      name:
+        process.env.BUILD_NAME ||
+        // azure
+        process.env.BUILD_DEFINITIONNAME ||
+        // drone
+        process.env.DRONE_STAGE_NAME ||
+        // circle ci
+        process.env.CIRCLE_JOB ||
+        // jenkins
+        process.env.JOB_NAME ||
+        env.name,
       state,
       commit: env.commit,
       issueKeys,

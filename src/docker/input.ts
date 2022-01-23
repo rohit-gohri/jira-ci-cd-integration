@@ -9,9 +9,13 @@ export function getEnvironment(): {
   type: 'unmapped' | 'development' | 'testing' | 'staging' | 'production'
 } {
   const label =
+    // gitlab
     process.env.CI_ENVIRONMENT_NAME ||
+    // drone
     process.env.DRONE_DEPLOY_TO ||
     process.env.BUILD_ENVIRONMENT ||
+    // netlify
+    process.env.CONTEXT ||
     defaultEnv
 
   const type:
