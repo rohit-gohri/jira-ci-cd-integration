@@ -9,15 +9,15 @@
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
-    "lint:fix": "npm run lint -- --fix ",
-    "package": "npm run package:docker && npm run package:action",
+    "lint:fix": "yarn lint --fix ",
+    "package": "yarn package:docker && yarn package:action",
     "package:docker": "ncc build src/docker/main.ts --out dist/docker --source-map --license licenses.txt",
     "package:action": "ncc build src/github/main.ts --out dist/github --source-map --license licenses.txt",
     "increment": "npm --no-git-tag-version version",
     "test": "jest"
   },
   "engines": {
-    "node": "12.16.x"
+    "node": ">=16"
   },
   "repository": {
     "type": "git",
@@ -35,7 +35,7 @@
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
     "@octokit/webhooks-definitions": "^3.67.3",
-    "@relative-ci/env-ci": "^5.3.1",
+    "env-ci": "^7.0.0",
     "isomorphic-fetch": "^3.0.0",
     "tslib": "^2.3.1"
   },
@@ -57,5 +57,6 @@
     "prettier": "2.3.2",
     "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
-  }
+  },
+  "packageManager": "yarn@3.1.1"
 }

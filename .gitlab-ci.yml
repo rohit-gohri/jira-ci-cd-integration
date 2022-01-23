@@ -1,6 +1,6 @@
 # http://docs.gitlab.com/ce/ci/yaml/README.html
 
-image: node:12
+image: node:16
 
 workflow:
   rules:
