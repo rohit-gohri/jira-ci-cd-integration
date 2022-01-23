@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Generate build
 # ------------------------------------------------------------------------------
-FROM node:12-alpine as generator
+FROM node:16-alpine as generator
 
 LABEL stage=generator
 
@@ -23,7 +23,7 @@ RUN npm ci --only=prod
 # ------------------------------------------------------------------------------
 # Second image (release image)
 # ------------------------------------------------------------------------------
-FROM node:12-alpine
+FROM node:16-alpine
 
 WORKDIR /usr/src/jira-ci-cd-integration
 

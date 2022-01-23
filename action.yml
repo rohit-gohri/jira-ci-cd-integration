@@ -35,5 +35,5 @@ inputs:
     required: false
     description: Will be parsed from branch name automatically if not provided.
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/github/index.js'

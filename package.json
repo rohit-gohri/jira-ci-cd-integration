@@ -17,7 +17,7 @@
     "test": "jest"
   },
   "engines": {
-    "node": "12.16.x"
+    "node": ">=16"
   },
   "repository": {
     "type": "git",
