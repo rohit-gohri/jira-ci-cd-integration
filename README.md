@@ -137,7 +137,7 @@ Just provide an evironment to send a deployment event instead of a build event.
   with:
     state: ${{ job.status }}
     environment: staging
-    issue: JCI-3, JCI-6 # Comma separated list of issues being deployed/released. You are expected to generate this yourself in a previous step
+    issue: JCI-3, JCI-6 # Comma separated list of issues being deployed/released. You are expected to generate this yourself in a previous step for releases
     jira_instance: companyname # Subdomain for Jira Cloud
     client_id: ${{ secrets.JIRA_CLIENT_ID }}
     client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
@@ -167,13 +167,17 @@ Client Secret of OAuth Creds
 
 #### state: BUILD_STATE (optional)
 
-"successful"/"success", "failed", or "canceled" (default is "successful")
+"successful"/"success", "failed", or "canceled" (default is "successful").
+
+We try to detect this via [env-ci](https://github.com/semantic-release/env-ci) for most CI/CD providers, but you can manually override it if you wish to do so.
 
 #### issue: JIRA_ISSUES (optional)
 
-Will be parsed from branch name automatically if absent. Or you can provide it according to your own logic. Can be multiple issues.
+Will be parsed from branch name automatically if available. Or you can provide it according to your own logic. Can be multiple comma separated issues.
 
 ### Pipeline Info
+
+We try to detect this via [env-ci](https://github.com/semantic-release/env-ci) for most CI/CD providers, but you can manually override it if you wish to do so.
 
 #### Commit Message: COMMIT_MESSAGE
 
@@ -195,3 +199,10 @@ A name for your environment. The tool tries to automatically infer this from you
 
 The tool tries to automatically parse this from environment but if you want to override then provide one of (`unmapped`, `development`, `testing`, `staging`, `production`)
 
+## Contributing
+
+Feel free to open issues/Pull Requests to add support for some CI provider that doesn't have support yet.
+
+## License
+
+[MIT License. Copyright (c) 2022 Rohit Gohri](./LICENSE)
