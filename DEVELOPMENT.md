@@ -7,19 +7,19 @@
 Install the dependencies
 
 ```bash
-npm install
+yarn
 ```
 
 Build the typescript and package it for distribution
 
 ```bash
-npm run build && npm run package
+yarn build && yarn package
 ```
 
 Run the tests :heavy_check_mark:
 
 ```bash
-npm test
+yarn test
 
  PASS  ./index.test.js
   ✓ throws invalid number (3ms)
@@ -67,7 +67,7 @@ We use a different build to also publish the action as a standalone docker image
 
 ## Publish to a distribution branch
 
-Just run `npm run increment -- <patch|minor|major>` and push the changes to `main` branch. This will automatically generate a build file push to distribution branch (`releases/vx`). That will in turn trigger a workflow to build Dockerfile and publish it.
+Just run `yarn increment <patch|minor|major>` and push the changes to `main` branch. This will automatically generate a build file push to distribution branch (`releases/vx`). That will in turn trigger a workflow to build Dockerfile and publish it.
 
 Your action is now published! :rocket:
 

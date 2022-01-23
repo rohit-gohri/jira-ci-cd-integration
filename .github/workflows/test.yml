@@ -6,6 +6,10 @@ on: # rebuild any PRs and main branch changes
     branches:
       - main
 
+env:
+  YARN_COMPRESSION_LEVEL: 0
+  YARN_ENABLE_GLOBAL_CACHE: true
+
 jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
@@ -13,35 +17,23 @@ jobs:
       - name: Checkout commit
         uses: actions/checkout@v2
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: npm
-        with:
-          path: |
-            ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
       - name: Use Node.js 16
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache: 'yarn'
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: yarn install --immutable
 
       - name: Checks
         run: |
-          npm run lint
-          npm run build
-          npm run test
+          yarn lint
+          yarn build
+          yarn test
 
       - name: 🔨 Package Action
-        run: npm run package:action
+        run: yarn package:action
 
       - name: Test Action - Build
         uses: ./

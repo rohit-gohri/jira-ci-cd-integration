@@ -5,6 +5,10 @@ on:
     branches:
       - 'main'
 
+env:
+  YARN_COMPRESSION_LEVEL: 0
+  YARN_ENABLE_GLOBAL_CACHE: true
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -31,29 +35,18 @@ jobs:
           else
               echo "create_release=yes" >> $GITHUB_ENV
           fi
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: npm
-        with:
-          path: |
-            ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - name: Use Node.js 16
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache: 'yarn'
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: yarn install --immutable
 
       - name: 🔨 Build Project
-        run: npm run package
+        run: yarn package
 
       - name: Checkout release branch
         uses: actions/checkout@v2
@@ -67,7 +60,8 @@ jobs:
           # Copy build
           cp -r dist release
           cp package.json release/
-          cp package-lock.json release/
+          cp yarn.lock release/
+          cp -r .yarn release/
           cp action.yml release/
 
           # Copy pipelines

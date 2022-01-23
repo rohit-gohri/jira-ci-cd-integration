@@ -8,17 +8,19 @@ LABEL stage=generator
 WORKDIR /jci
 
 # Install app dependencies
-COPY package*.json ./
-RUN npm ci
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn ./.yarn
+
+RUN yarn install --immutable
 
 # Bundle app source
 COPY . .
 
 # Package only Docker version
-RUN npm run package:docker
+RUN yarn package:docker
 
 # Install production dependencies
-RUN npm ci --only=prod
+RUN yarn workspaces focus --production
 
 # ------------------------------------------------------------------------------
 # Second image (release image)
