@@ -1203,9 +1203,9 @@ emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
 
-env-ci@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/env-ci/-/env-ci-7.0.0.tgz#5ba18dc1a43af78330f5f2dd59806c99d5e548a5"
+env-ci@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/env-ci/-/env-ci-7.1.0.tgz#db373205b7ce7eaf3dbc51c26dbe76fcb5703389"
   dependencies:
     execa "^5.0.0"
     fromentries "^1.3.2"
