@@ -559,9 +559,9 @@
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
 
-"@octokit/webhooks-types@^5.3.0":
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/@octokit/webhooks-types/-/webhooks-types-5.3.0.tgz#9ee5296a20598b0d99b1efc7d72f87d9f8206591"
+"@octokit/webhooks-types@^6.10.0":
+  version "6.10.0"
+  resolved "https://registry.yarnpkg.com/@octokit/webhooks-types/-/webhooks-types-6.10.0.tgz#b441780d26370c7682f4f964d4b36b5cb0c757f8"
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
