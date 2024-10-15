@@ -1300,14 +1300,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/ncc@npm:^0.33.1":
-  version: 0.33.1
-  resolution: "@vercel/ncc@npm:0.33.1"
+"@vercel/ncc@npm:^0.38.2":
+  version: 0.38.2
+  resolution: "@vercel/ncc@npm:0.38.2"
   dependencies:
     node-gyp: latest
   bin:
     ncc: dist/ncc/cli.js
-  checksum: 62af9ce257df1ac61acff4facfbb8f3f367a4df02705d608fe43ec5e9fa231e3fcb06a9e494c4e3b3e76441d97cc547aa2c434a5706a02d05f18c32c19dd7929
+  checksum: 7f4d119e99e96ae1faeb8a1e8523e11845b224cf5cd7c297e2873933c6f6c225dcb6c4b036502f4f2691a16f0723205a7b11b4a08f29c3f78f18d411bfbe46e8
   languageName: node
   linkType: hard
 
@@ -3941,7 +3941,7 @@ __metadata:
     "@types/node": ^16.11.21
     "@typescript-eslint/eslint-plugin": ^5.10.0
     "@typescript-eslint/parser": ^5.10.0
-    "@vercel/ncc": ^0.33.1
+    "@vercel/ncc": ^0.38.2
     env-ci: ^7.1.0
     eslint: ^8.7.0
     eslint-config-prettier: ^8.3.0
