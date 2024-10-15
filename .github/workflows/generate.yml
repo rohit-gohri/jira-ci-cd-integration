@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -37,7 +37,7 @@ jobs:
           fi
 
       - name: Use Node.js 16
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: 16
           cache: 'yarn'
@@ -49,7 +49,7 @@ jobs:
         run: yarn package
 
       - name: Checkout release branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: release
           ref: releases/v${{ env.major_version }}
