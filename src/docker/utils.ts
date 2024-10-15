@@ -1,6 +1,7 @@
 import envCi, {GitLabEnv} from 'env-ci'
 import {getLogger} from '../utils/logger'
 import {ValidState} from '../utils/types'
+import {jiraIssueRegexp} from '../jira/regex'
 
 // Using this type as this has the most supported fields
 const env = envCi() as GitLabEnv
@@ -56,11 +57,11 @@ export async function getIssueKeys(): Promise<string[]> {
   const branchName = getBranchName()
   const commitMessage = await getCommitMessage()
 
-  const fromInput = process.env.JIRA_ISSUES?.match(/(\w+)-(\d+)/g) ?? []
+  const fromInput = process.env.JIRA_ISSUES?.match(jiraIssueRegexp) ?? []
 
-  const fromBranch = branchName?.match(/(\w+)-(\d+)/g) ?? []
+  const fromBranch = branchName?.match(jiraIssueRegexp) ?? []
 
-  const fromCommit = commitMessage?.match(/(\w+)-(\d+)/g) ?? []
+  const fromCommit = commitMessage?.match(jiraIssueRegexp) ?? []
 
   const issueKeys = [...fromInput, ...fromBranch, ...fromCommit].filter(
     (value, index, array) => {
