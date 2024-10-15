@@ -3,6 +3,7 @@ import * as github from '@actions/github'
 import type {PullRequestEvent, PushEvent} from '@octokit/webhooks-types'
 import {getLogger} from '../utils/logger'
 import {ValidState} from '../utils/types'
+import {jiraIssueRegexp} from '../jira/regex'
 
 export function getBranchName(): string | undefined {
   let branchName: string | undefined
@@ -64,11 +65,11 @@ export async function getIssueKeys(): Promise<string[]> {
   const branchName = getBranchName()
   const commitMessage = await getCommitMessage()
 
-  const fromInput = core.getInput('issue')?.match(/(\w+)-(\d+)/g) ?? []
+  const fromInput = core.getInput('issue')?.match(jiraIssueRegexp) ?? []
 
-  const fromBranch = branchName?.match(/(\w+)-(\d+)/g) ?? []
+  const fromBranch = branchName?.match(jiraIssueRegexp) ?? []
 
-  const fromCommit = commitMessage?.match(/(\w+)-(\d+)/g) ?? []
+  const fromCommit = commitMessage?.match(jiraIssueRegexp) ?? []
 
   const issueKeys = [...fromInput, ...fromBranch, ...fromCommit].filter(
     (value, index, array) => {
