@@ -41,7 +41,7 @@ jobs:
           images: |
             boringdownload/jira-integration
             ghcr.io/rohit-gohri/jira-ci-cd-integration
-            registry.gitlab.com/rohit-gohri/jira-ci-cd-integration
+          #   registry.gitlab.com/rohit-gohri/jira-ci-cd-integration
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -58,7 +58,7 @@ jobs:
           images: |
             boringdownload/jira-integration
             ghcr.io/rohit-gohri/jira-ci-cd-integration
-            registry.gitlab.com/rohit-gohri/jira-ci-cd-integration
+          #  registry.gitlab.com/rohit-gohri/jira-ci-cd-integration
           # generate Docker tags based on the following events/attributes
           tags: |
             type=raw,value=alpha
@@ -86,12 +86,12 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🛂 Log in to the Gitlab Container registry
-        uses: docker/login-action@v1
-        with:
-          registry: registry.gitlab.com
-          username: ${{ secrets.GITLAB_USERNAME }}
-          password: ${{ secrets.GITLAB_TOKEN }}
+      # - name: 🛂 Log in to the Gitlab Container registry
+      #   uses: docker/login-action@v1
+      #   with:
+      #     registry: registry.gitlab.com
+      #     username: ${{ secrets.GITLAB_USERNAME }}
+      #     password: ${{ secrets.GITLAB_TOKEN }}
 
       - name: 🔨🚀 Build and push Release
         if: ${{ env.create_release == 'yes' }}
