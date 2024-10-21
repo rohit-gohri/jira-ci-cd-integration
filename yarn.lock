@@ -976,10 +976,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/webhooks-types@npm:^6.10.0":
-  version: 6.10.0
-  resolution: "@octokit/webhooks-types@npm:6.10.0"
-  checksum: 6eac226f070a48d9ef2594df952e8540b001e2a8760c4fa5ac2f78c1750694a6c3b8de42fb4dbb4bb78335f091d9268539d4261c52a1a91fb9ef1e9af1959b44
+"@octokit/webhooks-types@npm:^7.6.1":
+  version: 7.6.1
+  resolution: "@octokit/webhooks-types@npm:7.6.1"
+  checksum: 5b3aa8e63c4eaf511e571dbd55868688cb2ec68c41f02238b4894336e2220fa19a723be83b6383621fbaa90695056a64533959a9cc6ffdbd27faa58b22e6ef51
   languageName: node
   linkType: hard
 
@@ -3934,7 +3934,7 @@ __metadata:
   dependencies:
     "@actions/core": ^1.11.1
     "@actions/github": ^6.0.0
-    "@octokit/webhooks-types": ^6.10.0
+    "@octokit/webhooks-types": ^7.6.1
     "@types/env-ci": ^3.1.1
     "@types/isomorphic-fetch": 0.0.35
     "@types/jest": ^27.4.0
